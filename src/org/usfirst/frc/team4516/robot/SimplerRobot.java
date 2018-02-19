@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;//Gyroscope
 
 
 @SuppressWarnings("deprecation")//Yeah I don't give a damn but I need to have this code done
-public class hecc extends SampleRobot{
+public class SimplerRobot extends SampleRobot{
 	//Channels for motors/joysticks
 	private static final int kFrontLeftChannel = 5;
 	private static final int kRearLeftChannel = 1;

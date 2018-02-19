@@ -3,18 +3,18 @@ import edu.wpi.first.wpilibj.Encoder;
 import java.math.*;
 public class MecanumEncoder{
 	//Encoder vars
-	private Encoder frontRight;
-	private Encoder rearRight;
-	private Encoder frontLeft;
-	private Encoder rearLeft;
+	private Encoder m_frontRight;
+	private Encoder m_rearRight;
+	private Encoder m_frontLeft;
+	private Encoder m_rearLeft;
 	private double m_positionX;
 	private double m_positionY;
 	
 	public MecanumEncoder(Encoder frontRight, Encoder rearRight, Encoder frontLeft, Encoder rearLeft) {
-		frontRight = this.frontRight;
-		rearRight = this.rearRight;
-		frontLeft = this.frontLeft;
-		rearLeft = this.rearLeft;
+		m_frontRight = frontRight;
+		m_rearRight = rearRight;
+		m_frontLeft = frontLeft;
+		m_rearLeft = rearLeft;
 		m_positionX = 0;
 		m_positionY = 0;
 	}
@@ -25,12 +25,12 @@ public class MecanumEncoder{
 	}
 	
 	public double getVelocityX() {
-		double velocity = ((frontRight.getRate() + rearRight.getRate() + frontLeft.getRate() + rearLeft.getRate())/4.0);
+		double velocity = ((m_frontRight.getRate() + m_rearRight.getRate() + m_frontLeft.getRate() + m_rearLeft.getRate())/4.0);
 		return(velocity);
 	}
 	
 	public double getVelocityY() {
-		double velocity = ((frontLeft.getRate() - frontRight.getRate() - rearLeft.getRate() + rearRight.getRate())/4.0);
+		double velocity = ((m_frontLeft.getRate() - m_frontRight.getRate() - m_rearLeft.getRate() + m_rearRight.getRate())/4.0);
 		return(velocity);
 	}
 	

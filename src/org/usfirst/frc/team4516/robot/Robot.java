@@ -25,7 +25,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 @SuppressWarnings("deprecation")
 public class Robot extends SampleRobot{
-	//Channels for motors/joysticks
+        //Robot modules
+        private RobotMovements robot;
+        private Autonomous autonomousMode;
+        private Teleop teleopMode;
+        
+	    //Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
 		private static final int kRearLeftChannel = 1;
 		private static final int kFrontRightChannel = 6;
@@ -133,16 +138,172 @@ public class Robot extends SampleRobot{
     public void autonomous() { 
 		m_timer.reset();
 		m_timer.start();
+		
         while (isAutonomous() && isEnabled()) {
         	String gameData;
+        	
+        	//Variables for cases
+            char initPosition = 'L';
+            char initGoal = 'scale';
+        	
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
-    		if(gameData.charAt(1) == 'L')//First Switch is on left
-    		{
+    		
+    		switch(initPosition) {
+            case 'L':
+                switch(initGoal){
+                    case 'scale':
+                        if(gameData.charAt(2) == 'L') {//First Scale is on left
+                            moveForward(310);
+                            turnRight();
+                            moveSlideUp(0.5);
+                            moveForward(6);
+                            releaseCube();
+                            moveBackward(8);
+                            moveSlideDown(0.5);
+                            
+                        } else if(gameData.charAt(2) == 'R') {//First Scale is on right
+                            moveForward(240);
+                            strafeRight(240);
+                            moveForward(60);
+                            turnLeft();
+                            moveSlideUp(0.5);
+                            moveForward(6);
+                            releaseCube();
+                            moveBackward(8);
+                            moveSlideDown(0.5);
+                    }   
+                    break;
+                    
+                    case 'switch':
+                        if(gameData.charAt(1) == 'L') {//First Switch is on left
+                            moveForward(170);
+                            turnRight();
+                            moveForward(6);
+                            releaseCube();
+                            moveBackward(8);
+                            moveSlideDown(0.5);
+                        
+                        } else if(gameData.charAt(1) == 'R') {//First Switch is on right
+                            moveForward(240);
+                            strafeRight(240);
+                            moveBackward(60);
+                            turnLeft();
+                            moveSlideUp(0.5);
+                            moveForward(20);
+                            releaseCube();
+                            moveBackward(16);
+                            moveSlideDown(0.5);
+                    }
+                    break;
+                }
+            break;
+            
+            case 'M':
+                switch(initGoal){
+                    case 'scale':
+                        if(gameData.charAt(2) == 'L') {//First Scale is on left
+    			            moveForward(80);
+    			            strafeLeft(160);
+    			            moveForward(230);
+    			            turnRight();
+    			            moveSlideUp(0.5);   
+    			            moveForward(6);
+    			            releaseCube();
+    			            moveBackward(8);
+    			            moveSlideDown(0.5);
     			
-    		} else if(gameData.charAt(1) == 'R'){//First Switch is on right
-    			
-    		}
+    		          } else if(gameData.charAt(2) == 'R') {//First Scale is on right
+    			            moveForward(80);
+    			            strafeRight(120);
+    			            moveForward(230);
+    			            turnLeft();
+    			            moveSlideUp(0.5);
+    			            moveForward(6);
+    			            releaseCube();
+    			            moveBackward(8);
+    			            moveSlideDown(0.5);
+    		        }        
+                    break;
+                    
+                    case 'switch':
+                        if(gameData.charAt(1) == 'L') {//First Switch is on left
+                            moveForward(80);
+                            strafeLeft(160);
+                            moveForward(90);
+                            turnRight();
+                            moveSlideUp(0.5);
+                            moveForward(30);
+                            releaseCube();
+                            moveBackward(16);
+                            moveSlideDown(0.5);
+                        
+                    } else if(gameData.charAt(1) == 'R') {//First Switch is on right
+                           moveForward(80);
+                           strafeRight(120);
+                           moveForward(90);
+                           turnLeft();
+                           moveSlideUp(0.5);
+                           moveForward(30);
+                           releaseCube();
+                           moveBackward(16);
+                           moveSlideDown(0.5);
+                    }        
+                    break;
+                }
+    		break;
+            
+            case 'R':
+                switch(initGoal){
+                    case 'scale':
+                        if(gameData.charAt(2) == 'L') {//First Scale is on left
+                            moveForward(240);
+                            strafeLeft(240);
+                            moveForward(60);
+                            turnRight();
+                            moveSlideUp(0.5);
+                            moveForward(6);
+                            releaseCube();
+                            moveBackward(8);
+                            moveSlideDown(0.5);
+                            
+                        } else if(gameData.charAt(2) == 'R') {//First Scale is on right
+                            moveForward(310);
+                            turnLeft();
+                            moveSlideUp(0.5);
+                            moveForward(6);
+                            releaseCube();
+                            moveBackward(8);
+                            moveSlideDown(0.5);
+                    }   
+                    break;
+                    
+                    case 'switch':
+                        if(gameData.charAt(1) == 'L') {//First Switch is on left
+                            moveForward(240);
+                            strafeLeft(240);
+                            moveBackward(60);
+                            turnRight();
+                            moveSlideUp(0.5);
+                            moveForward(20);
+                            releaseCube();
+                            moveBackward(16);
+                            moveSlideDown(0.5);
+                        
+                        } else if(gameData.charAt(1) == 'R') {//First Switch is on right
+                            moveForward(170);
+                            turnLeft();
+                            moveForward(6);
+                            releaseCube();
+                            moveBackward(8);
+                            moveSlideDown(0.5);
+                    }
+                    break;
+                }
+            break;
+        }
+    		
             //Timer.delay(0.02);
+            
         }
     }
 
@@ -189,6 +350,45 @@ public class Robot extends SampleRobot{
     	double initDistance = e_frontRight.getDistance();
     	while(e_frontRight.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.5, 0.0, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot backward a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void moveBackward(double distance) {
+    	double initDistance = e_frontRight.getDistance();
+    	while(e_frontRight.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot left a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void strafeLeft(double distance) {
+    	double initDistance = e_frontRight.getDistance();
+    	while(e_frontRight.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot right a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void strafeRight(double distance) {
+    	double initDistance = e_frontRight.getDistance();
+    	while(e_frontRight.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }

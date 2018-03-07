@@ -68,6 +68,9 @@ public class MecanumEncoder{
 		return m_positionY;
 	}
 	
-	
+	public double getDistance() {
+		double distance = ((m_frontRight.getDistance() + m_rearRight.getDistance() + m_frontLeft.getDistance() + m_rearLeft.getDistance()) / 4 );
+		return distance;
+	}
 	
 }

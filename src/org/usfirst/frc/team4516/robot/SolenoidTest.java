@@ -25,9 +25,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 @SuppressWarnings("deprecation")//Yeah I don't give a damn but I need to have this code done
 public class Robot extends SampleRobot{
-	
+	public static final int solenoidChan1 = 0;
+	public static final int solenoidChan2 = 1;
 	
 	public void robotInit() {
+		
 	}
 	
 	/**

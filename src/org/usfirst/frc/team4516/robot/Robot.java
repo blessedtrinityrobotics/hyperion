@@ -7,7 +7,7 @@
 
 /*
  * THE OFFICIAL TEAM HYPERION ROBOT CODE 2018
- * This code was written by Carlos Saucedo & Ricardo Santamaria-Sarcos.
+ * This code was written by Carlos Saucedo & Zachary Moroski.
 */
 
 package org.usfirst.frc.team4516.robot;

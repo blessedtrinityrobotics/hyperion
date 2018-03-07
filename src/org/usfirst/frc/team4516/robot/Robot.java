@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;//Gyroscope
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
-@SuppressWarnings("deprecation")//Yeah I don't give a damn but I need to have this code done
+@SuppressWarnings("deprecation")
 public class Robot extends SampleRobot{
 	//Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
@@ -42,11 +42,11 @@ public class Robot extends SampleRobot{
 		private static final int kRearLeftEncoderB = 1;
 		private static final int kSlideMotor1 = 2;
 		private static final int kSlideMotor2 = 3;
-		//sprivate static final int forwardArmSolenoidChan = 69;
-		//sprivate static final int reverseArmSolenoidChan = 42;
-		//sprivate static final int forwardClimbSolenoidChan = 500;
-		//sprivate static final int reverseClimbSolenoidChan = 60;
-		private double wheelCircumference = 25.132741228700002267; //Circumference
+		private static final int forwardArmSolenoidChan = 0;
+		private static final int reverseArmSolenoidChan = 1;
+		private static final int forwardClimbSolenoidChan = 2;
+		private static final int reverseClimbSolenoidChan = 3;
+		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
 		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
 		
 		//MecanumDrive constructor
@@ -66,8 +66,8 @@ public class Robot extends SampleRobot{
 		private SpeedController m_slideMotor2;
 		
 		//Solenoids
-		//sprivate DoubleSolenoid armSolenoid;
-		//sprivate DoubleSolenoid climbSolenoid;
+		private DoubleSolenoid armSolenoid;
+		private DoubleSolenoid climbSolenoid;
 		
 		//Sensor declarations
 		private ADXRS450_Gyro onboardGyro;
@@ -92,8 +92,8 @@ public class Robot extends SampleRobot{
 				m_slideMotor2.setInverted(true);//Sets this one to be inverted
 				
 				//Solenoids
-				//sarmSolenoid = new DoubleSolenoid(forwardArmSolenoidChan, reverseArmSolenoidChan);
-				//sclimbSolenoid = new DoubleSolenoid(forwardClimbSolenoidChan, reverseClimbSolenoidChan);
+				armSolenoid = new DoubleSolenoid(forwardArmSolenoidChan, reverseArmSolenoidChan);
+				climbSolenoid = new DoubleSolenoid(forwardClimbSolenoidChan, reverseClimbSolenoidChan);
 				
 				//Constructor for RobotDrive
 				//Note: X is left-right (strafe), Y is forward-backward, Z is rotation
@@ -178,7 +178,13 @@ public class Robot extends SampleRobot{
     }
     
     
-    //Function
+    //Functions
+    
+    /**
+     * Moves the robot forward a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
     public void moveForward(double distance) {
     	double initDistance = e_frontRight.getDistance();
     	while(e_frontRight.getDistance() < initDistance) {
@@ -187,6 +193,9 @@ public class Robot extends SampleRobot{
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
+    /**
+     * Turns the robot to the right 90 degrees
+     */
     public void turnRight() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() < initBearing + 90) {
@@ -195,6 +204,9 @@ public class Robot extends SampleRobot{
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
+    /**
+     * Turns the robot to the left 90 degrees.
+     */
     public void turnLeft() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
@@ -204,16 +216,27 @@ public class Robot extends SampleRobot{
     }
     
     //Slide rail controls
-    public void moveSlideUp(double speed) {//moves the slide
+    /**
+     * Moves the slide up at a set speed.
+     * @param speed Motor speed
+     */
+    public void moveSlideUp(double speed) {
  	   m_slideMotor1.set(speed);
  	   m_slideMotor2.set(-speed);
     }
     
+    /**
+     * Moves the slide down at a set speed.
+     * @param speed Motor speed
+     */
     public void moveSlideDown(double speed) {
  	   m_slideMotor1.set(-speed);
  	   m_slideMotor2.set(speed);
     }
     
+    /**
+     * Stops the slide.
+     */
     public void stopSlide() {
  	   m_slideMotor1.set(0.0);
  	   m_slideMotor2.set(0.0);
@@ -221,15 +244,42 @@ public class Robot extends SampleRobot{
     }
     
     //Pneumatic controls
+    /**
+     * Operates pneumatics in order to grab a cube.
+     */
     public void grabCube() {
-    	
+    	armSolenoid.set(kForward);
     }
     
+    /**
+     * Operates pneumatics in order to release a cube.
+     */
     public void releaseCube() {
-    	
+    	armSolenoid.set(kBackward);
     }
     
-    public void stopCube() {
-    	
+    /**
+     * Stops arm solenoid operation.
+     */
+    public void stopCube(){
+        armSolenoid.set(kOff);
+    }
+    
+    /**
+     * Changes robot into climbing mode using the gearswitch solenoid.
+     */
+    public void switcherClimb(){
+        climbSolenoid.set(kForward);
+    }
+    
+    /**
+     * Changes robot into cube grabbing mode using the gearswitch solenoid.
+     */
+    public void switcherCube(){
+        climbSolenoid.set(kBackward);
+    }
+    
+    public void stopSwitcher(){
+        climbSolenoid.set(kOff);
     }
 }

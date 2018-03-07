@@ -144,15 +144,15 @@ public class Robot extends SampleRobot{
         	
         	//Variables for cases
             char initPosition = 'L';
-            char initGoal = 'scale';
+            char initGoal = 'c';
         	
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
     		
     		switch(initPosition) {
             case 'L':
                 switch(initGoal){
-                    case 'scale':
-                        if(gameData.charAt(2) == 'L') {//First Scale is on left
+                    case 'c':
+                        if(gameData.charAt(2) == 'L') {//First c is on left
                             moveForward(310);
                             turnRight();
                             moveSlideUp(0.5);
@@ -161,7 +161,7 @@ public class Robot extends SampleRobot{
                             moveBackward(8);
                             moveSlideDown(0.5);
                             
-                        } else if(gameData.charAt(2) == 'R') {//First Scale is on right
+                        } else if(gameData.charAt(2) == 'R') {//First c is on right
                             moveForward(240);
                             strafeRight(240);
                             moveForward(60);
@@ -174,7 +174,7 @@ public class Robot extends SampleRobot{
                     }   
                     break;
                     
-                    case 'switch':
+                    case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(170);
                             turnRight();
@@ -200,8 +200,8 @@ public class Robot extends SampleRobot{
             
             case 'M':
                 switch(initGoal){
-                    case 'scale':
-                        if(gameData.charAt(2) == 'L') {//First Scale is on left
+                    case 'c':
+                        if(gameData.charAt(2) == 'L') {//First c is on left
     			            moveForward(80);
     			            strafeLeft(160);
     			            moveForward(230);
@@ -212,7 +212,7 @@ public class Robot extends SampleRobot{
     			            moveBackward(8);
     			            moveSlideDown(0.5);
     			
-    		          } else if(gameData.charAt(2) == 'R') {//First Scale is on right
+    		          } else if(gameData.charAt(2) == 'R') {//First c is on right
     			            moveForward(80);
     			            strafeRight(120);
     			            moveForward(230);
@@ -225,7 +225,7 @@ public class Robot extends SampleRobot{
     		        }        
                     break;
                     
-                    case 'switch':
+                    case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(80);
                             strafeLeft(160);
@@ -254,8 +254,8 @@ public class Robot extends SampleRobot{
             
             case 'R':
                 switch(initGoal){
-                    case 'scale':
-                        if(gameData.charAt(2) == 'L') {//First Scale is on left
+                    case 'c':
+                        if(gameData.charAt(2) == 'L') {//First c is on left
                             moveForward(240);
                             strafeLeft(240);
                             moveForward(60);
@@ -266,7 +266,7 @@ public class Robot extends SampleRobot{
                             moveBackward(8);
                             moveSlideDown(0.5);
                             
-                        } else if(gameData.charAt(2) == 'R') {//First Scale is on right
+                        } else if(gameData.charAt(2) == 'R') {//First c is on right
                             moveForward(310);
                             turnLeft();
                             moveSlideUp(0.5);
@@ -277,7 +277,7 @@ public class Robot extends SampleRobot{
                     }   
                     break;
                     
-                    case 'switch':
+                    case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(240);
                             strafeLeft(240);
@@ -448,38 +448,38 @@ public class Robot extends SampleRobot{
      * Operates pneumatics in order to grab a cube.
      */
     public void grabCube() {
-    	armSolenoid.set(kForward);
+    	armSolenoid.set(DoubleSolenoid.value.kForward);
     }
     
     /**
      * Operates pneumatics in order to release a cube.
      */
     public void releaseCube() {
-    	armSolenoid.set(kBackward);
+    	armSolenoid.set(DoubleSolenoid.value.kBackward);
     }
     
     /**
      * Stops arm solenoid operation.
      */
     public void stopCube(){
-        armSolenoid.set(kOff);
+        armSolenoid.set(DoubleSolenoid.value.kOff);
     }
     
     /**
      * Changes robot into climbing mode using the gearswitch solenoid.
      */
     public void switcherClimb(){
-        climbSolenoid.set(kForward);
+        climbSolenoid.set(DoubleSolenoid.value.kForward);
     }
     
     /**
      * Changes robot into cube grabbing mode using the gearswitch solenoid.
      */
     public void switcherCube(){
-        climbSolenoid.set(kBackward);
+        climbSolenoid.set(DoubleSolenoid.value.kBackward);
     }
     
     public void stopSwitcher(){
-        climbSolenoid.set(kOff);
+        climbSolenoid.set(DoubleSolenoid.value.kOff);
     }
 }

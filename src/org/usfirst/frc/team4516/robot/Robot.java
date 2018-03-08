@@ -25,11 +25,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 @SuppressWarnings("deprecation")
 public class Robot extends SampleRobot{
-        //Robot modules
-        private RobotMovements robot;
-        private Autonomous autonomousMode;
-        private Teleop teleopMode;
-        
 	    //Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
 		private static final int kRearLeftChannel = 1;
@@ -347,8 +342,8 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveForward(double distance) {
-    	double initDistance = e_frontRight.getDistance();
-    	while(e_frontRight.getDistance() < initDistance) {
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.5, 0.0, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
@@ -360,8 +355,8 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveBackward(double distance) {
-    	double initDistance = e_frontRight.getDistance();
-    	while(e_frontRight.getDistance() < initDistance) {
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
@@ -373,8 +368,8 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void strafeLeft(double distance) {
-    	double initDistance = e_frontRight.getDistance();
-    	while(e_frontRight.getDistance() < initDistance) {
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
@@ -386,8 +381,8 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void strafeRight(double distance) {
-    	double initDistance = e_frontRight.getDistance();
-    	while(e_frontRight.getDistance() < initDistance) {
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);

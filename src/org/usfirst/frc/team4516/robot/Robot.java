@@ -356,7 +356,7 @@ public class Robot extends SampleRobot{
      */
     public void moveBackward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() < initDistance) {
+    	while(m_robotEncoder.getDistance() <                                                                                            initDistance) {
     		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);

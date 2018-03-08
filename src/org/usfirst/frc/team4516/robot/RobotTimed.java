@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 /*
- * THE OFFICIAL TEAM HYPERION ROBOT CODE 2018
- * This code was written by Carlos Saucedo & Ricardo Santamaria-Sarcos.
+ * Alternative team code written using the TimedRobot class.
+ * This code was written by Carlos Saucedo & Juan Carlos Santamaria.
 */
 
 package org.usfirst.frc.team4516.robot;

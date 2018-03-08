@@ -1,3 +1,8 @@
+/*
+ * Class used to enhance encoder methods and functions in a Mecanum-style drive train.
+ * @Authors: Carlos Saucedo and Juan Carlos Santamaria
+ */
+
 package org.usfirst.frc.team4516.robot;
 import edu.wpi.first.wpilibj.Encoder;
 import java.math.*;

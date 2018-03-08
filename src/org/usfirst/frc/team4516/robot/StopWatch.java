@@ -1,3 +1,9 @@
+/*
+ * Stopwatch for TimedRobot and other Autonomous functions.
+ * 
+ * @Author: Juan Carlos Santamaria and Carlos Saucedo
+ */
+
 package org.usfirst.frc.team4516.robot;
 
 /**

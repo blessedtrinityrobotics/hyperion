@@ -4,4 +4,4 @@ Hyperion Team Code.
 ## To Do
 - [ ] Find a way to measure distance when strafing
 - [ ] Find and test Double Solenoids
-- [x] Rename RobotTimed to show it as an alternative robot.java
+- [ ] Try to change from turtle-style driving to field-oriented driving using MecanumEncoder class.

@@ -1,8 +1,7 @@
 # 2018 Robot Code
 Hyperion Team Code.
 
-#To Do
-- [ ] Find out how to measure change in X with encoders
-- [ ] Fix strafeLeft() and strafeRight()
-- [ ] Strafe instead of turn left/right during autonomous
+## To Do
+- [ ] Find a way to measure distance when strafing
 - [ ] Find and test Double Solenoids
+- [ ] Try to change from turtle-style driving to field-oriented driving using MecanumEncoder class.

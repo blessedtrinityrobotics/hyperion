@@ -2,6 +2,7 @@
 Hyperion Team Code.
 
 #To Do
-- [ ] Find a way to measure distance when strafing
+- [ ] Find out how to measure change in X with encoders
+- [ ] Fix strafeLeft() and strafeRight()
+- [ ] Strafe instead of turn left/right during autonomous
 - [ ] Find and test Double Solenoids
-- [x] Rename RobotTimed to show it as an alternative robot.java

@@ -158,7 +158,9 @@ public class Robot extends SampleRobot{
                             
                         } else if(gameData.charAt(2) == 'R') {//First c is on right
                             moveForward(240);
-                            strafeRight(240);
+                            turnRight()
+                            moveForward(240);
+                            turnLeft();
                             moveForward(60);
                             turnLeft();
                             moveSlideUp(0.5);
@@ -180,7 +182,9 @@ public class Robot extends SampleRobot{
                         
                         } else if(gameData.charAt(1) == 'R') {//First Switch is on right
                             moveForward(240);
-                            strafeRight(240);
+                            turnRight();
+                            moveForward(240);
+                            turnLeft();
                             moveBackward(60);
                             turnLeft();
                             moveSlideUp(0.5);
@@ -198,7 +202,9 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//First c is on left
     			            moveForward(80);
-    			            strafeLeft(160);
+    			            turnLeft()
+    			            moveForward(160);
+    			            turnRight();
     			            moveForward(230);
     			            turnRight();
     			            moveSlideUp(0.5);   
@@ -209,7 +215,9 @@ public class Robot extends SampleRobot{
     			
     		          } else if(gameData.charAt(2) == 'R') {//First c is on right
     			            moveForward(80);
-    			            strafeRight(120);
+    			            turnRight();
+    			            moveForward(120);
+    			            turnLeft();
     			            moveForward(230);
     			            turnLeft();
     			            moveSlideUp(0.5);
@@ -223,7 +231,9 @@ public class Robot extends SampleRobot{
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(80);
-                            strafeLeft(160);
+                            turnLeft();
+                            moveForward(160);
+                            turnRight();
                             moveForward(90);
                             turnRight();
                             moveSlideUp(0.5);
@@ -234,7 +244,9 @@ public class Robot extends SampleRobot{
                         
                     } else if(gameData.charAt(1) == 'R') {//First Switch is on right
                            moveForward(80);
-                           strafeRight(120);
+                           turnRight();
+                           moveForward(120);
+                           turnLeft();
                            moveForward(90);
                            turnLeft();
                            moveSlideUp(0.5);
@@ -252,7 +264,9 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//First c is on left
                             moveForward(240);
-                            strafeLeft(240);
+                            turnLeft();
+                            moveForward(240);
+                            turnRight();
                             moveForward(60);
                             turnRight();
                             moveSlideUp(0.5);
@@ -275,7 +289,9 @@ public class Robot extends SampleRobot{
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(240);
-                            strafeLeft(240);
+                            turnLeft();
+                            moveForward(240);
+                            turnRight();
                             moveBackward(60);
                             turnRight();
                             moveSlideUp(0.5);
@@ -343,7 +359,7 @@ public class Robot extends SampleRobot{
      */
     public void moveForward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() < initDistance) {
+    	while(m_robotEncoder.getDistance() < initDistance + distance) {
     		m_robotDrive.driveCartesian(0.5, 0.0, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
@@ -356,7 +372,7 @@ public class Robot extends SampleRobot{
      */
     public void moveBackward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() <                                                                                            initDistance) {
+    	while(m_robotEncoder.getDistance() > initDistance - distance) {
     		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
@@ -367,7 +383,7 @@ public class Robot extends SampleRobot{
      * 
      * @param distance Distance, in units.
      */
-    public void strafeLeft(double distance) {
+    public void strafeLeft(double distance) {//DOESN'T WORK
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
@@ -380,7 +396,7 @@ public class Robot extends SampleRobot{
      * 
      * @param distance Distance, in units.
      */
-    public void strafeRight(double distance) {
+    public void strafeRight(double distance) {//DOESN'T WORK
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);

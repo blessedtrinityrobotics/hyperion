@@ -2,6 +2,7 @@
 Hyperion Team Code.
 
 ## To Do
-- [ ] Find a way to measure distance when strafing
-- [ ] Find and test Double Solenoids
-- [ ] Try to change from turtle-style driving to field-oriented driving using MecanumEncoder class.
+- [ ] Test DoubleSolenoids and its methods
+- [ ] Find a way to measure change in X
+- [ ] Fix strafeLeft() and strafeRight()
+- [ ] Switch to field oriented auto drive

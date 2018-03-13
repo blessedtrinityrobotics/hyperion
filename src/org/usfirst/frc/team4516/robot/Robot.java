@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 public class Robot extends SampleRobot{
         /*
          * Variables for autonomous cases. 
-         * initPosition values: L, M, R (fairly straighforward)
+         * initPosition values: L, M, R (fairly straightforward)
          * initGoal values: c, w (c -> scale; w -> switch)
          */
         char initPosition = 'L';
@@ -153,7 +153,7 @@ public class Robot extends SampleRobot{
                             
                         } else if(gameData.charAt(2) == 'R') {//First c is on right
                             moveForward(240);
-                            turnRight()
+                            turnRight();
                             moveForward(240);
                             turnLeft();
                             moveForward(60);
@@ -197,7 +197,7 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//First c is on left
     			            moveForward(80);
-    			            turnLeft()
+    			            turnLeft();
     			            moveForward(160);
     			            turnRight();
     			            moveForward(230);
@@ -454,38 +454,38 @@ public class Robot extends SampleRobot{
      * Operates pneumatics in order to grab a cube.
      */
     public void grabCube() {
-    	armSolenoid.set(DoubleSolenoid.value.kForward);
+    	armSolenoid.set(DoubleSolenoid.Value.kForward);
     }
     
     /**
      * Operates pneumatics in order to release a cube.
      */
     public void releaseCube() {
-    	armSolenoid.set(DoubleSolenoid.value.kBackward);
+    	armSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     
     /**
      * Stops arm solenoid operation.
      */
     public void stopCube(){
-        armSolenoid.set(DoubleSolenoid.value.kOff);
+        armSolenoid.set(DoubleSolenoid.Value.kOff);
     }
     
     /**
      * Changes robot into climbing mode using the gearswitch solenoid.
      */
     public void switcherClimb(){
-        climbSolenoid.set(DoubleSolenoid.value.kForward);
+        climbSolenoid.set(DoubleSolenoid.Value.kForward);
     }
     
     /**
      * Changes robot into cube grabbing mode using the gearswitch solenoid.
      */
     public void switcherCube(){
-        climbSolenoid.set(DoubleSolenoid.value.kBackward);
+        climbSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     
     public void stopSwitcher(){
-        climbSolenoid.set(DoubleSolenoid.value.kOff);
+        climbSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 }

@@ -5,7 +5,6 @@
 
 package org.usfirst.frc.team4516.robot;
 import edu.wpi.first.wpilibj.Encoder;
-import java.math.*;
 public class MecanumEncoder{
 	//Encoder vars
 	private Encoder m_frontRight;

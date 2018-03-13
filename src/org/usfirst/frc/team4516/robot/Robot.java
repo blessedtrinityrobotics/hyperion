@@ -8,6 +8,7 @@
 /*
  * THE OFFICIAL TEAM HYPERION ROBOT CODE 2018
  * This code was written by Carlos Saucedo & Zachary Moroski.
+ * This robot utilizes Mecanum wheels.
 */
 
 package org.usfirst.frc.team4516.robot;
@@ -25,6 +26,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 @SuppressWarnings("deprecation")
 public class Robot extends SampleRobot{
+        /*
+         * Variables for autonomous cases. 
+         * initPosition values: L, M, R (fairly straighforward)
+         * initGoal values: c, w (c -> scale; w -> switch)
+         */
+        char initPosition = 'L';
+        char initGoal = 'c';
+        
 	    //Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
 		private static final int kRearLeftChannel = 1;
@@ -76,8 +85,6 @@ public class Robot extends SampleRobot{
 		private Encoder e_rearRight;
 		private Encoder e_frontLeft;
 		private Encoder e_rearLeft;
-		private StopWatch m_clock;
-		private double m_lastTime;
 	
 	public void robotInit() {
 		//Constructors for joysticks and motor controllers
@@ -114,13 +121,6 @@ public class Robot extends SampleRobot{
 				//Reset Encoders
 				m_robotEncoder.reset();
 				
-				
-				//Clock
-				m_clock = new StopWatch();
-				m_clock.start();
-				m_lastTime = 0.0;
-				
-				
 				//Gyro
 				 onboardGyro = new  ADXRS450_Gyro();
 				 onboardGyro.calibrate();//Calibrates the gyro
@@ -136,11 +136,6 @@ public class Robot extends SampleRobot{
 		
         while (isAutonomous() && isEnabled()) {
         	String gameData;
-        	
-        	//Variables for cases
-            char initPosition = 'L';
-            char initGoal = 'c';
-        	
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
     		
     		switch(initPosition) {

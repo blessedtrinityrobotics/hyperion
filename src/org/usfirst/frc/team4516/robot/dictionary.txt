@@ -3,3 +3,13 @@ gyro
 teleop
 pneumatics
 pneumatic
+solenoid
+gearswitch
+strafe
+mecanum
+carlos
+saucedo
+zachary
+moroski
+traction
+solenoids

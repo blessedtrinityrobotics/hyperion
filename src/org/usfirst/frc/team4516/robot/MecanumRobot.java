@@ -8,7 +8,7 @@
 /*
  * THE OFFICIAL TEAM HYPERION ROBOT CODE 2018
  * This code was written by Carlos Saucedo & Zachary Moroski.
- * This robot utilizes Traction wheels.
+ * This robot utilizes Mecanum wheels.
 */
 
 package org.usfirst.frc.team4516.robot;
@@ -19,8 +19,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;//Gyroscope
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -59,11 +58,8 @@ public class Robot extends SampleRobot{
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
 		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
 		
-		//RobotDrive constructors
-		private DifferentialDrive m_robotDrive;
-		private SpeedControllerGroup m_leftMotors;
-		private SpeedControllerGroup m_rightMotors;
-		
+		//MecanumDrive constructor
+		private MecanumDrive m_robotDrive;
 
 		//Controllers/etc
 		private Timer m_timer = new Timer();
@@ -107,9 +103,8 @@ public class Robot extends SampleRobot{
 				climbSolenoid = new DoubleSolenoid(forwardClimbSolenoidChan, reverseClimbSolenoidChan);
 				
 				//Constructor for RobotDrive
-				m_leftMotors = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
-				m_rightMotors = new SpeedControllerGroup(m_frontRight, m_rearRight);
-				m_robotDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+				//Note: X is left-right (strafe), Y is forward-backward, Z is rotation
+				m_robotDrive = new MecanumDrive(m_frontLeft, m_rearLeft, m_frontRight, m_rearRight);
 				
 				//Encoders
 				e_frontRight = new Encoder(kFrontRightEncoderA, kFrontRightEncoderB, false, Encoder.EncodingType.k1X);
@@ -323,8 +318,8 @@ public class Robot extends SampleRobot{
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-        	//Tank drive using 2 joysticks
-        	m_robotDrive.tankDrive(-m_leftJoystick.getY(), -m_rightJoystick.getY(), false);
+        	//Mecanum drive using 2 joysticks
+        	m_robotDrive.driveCartesian(-m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
         	
         	//Slide rail controls
         	if(m_rightJoystick.getRawButton(3)) {
@@ -360,9 +355,9 @@ public class Robot extends SampleRobot{
     public void moveForward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance + distance) {
-    		m_robotDrive.tankDrive(0.5, 0.5, false);
+    		m_robotDrive.driveCartesian(0.5, 0.0, 0.0, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**
@@ -373,9 +368,35 @@ public class Robot extends SampleRobot{
     public void moveBackward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() > initDistance - distance) {
-    		m_robotDrive.tankDrive(-0.5, -0.5, false);
+    		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot left a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void strafeLeft(double distance) {//DOESN'T WORK
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot right a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void strafeRight(double distance) {//DOESN'T WORK
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**
@@ -384,9 +405,9 @@ public class Robot extends SampleRobot{
     public void turnRight() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() < initBearing + 90) {
-    		m_robotDrive.tankDrive(0.5, -0.5, false);
+    		m_robotDrive.driveCartesian(0.0, 0.0, 0.5, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);;
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**
@@ -395,9 +416,9 @@ public class Robot extends SampleRobot{
     public void turnLeft() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
-    		m_robotDrive.tankDrive(-0.5, 0.5, false);;
+    		m_robotDrive.driveCartesian(0.0, 0.0, -0.5, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);;
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     //Slide rail controls

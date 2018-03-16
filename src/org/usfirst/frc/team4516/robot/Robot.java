@@ -8,7 +8,7 @@
 /*
  * THE OFFICIAL TEAM HYPERION ROBOT CODE 2018
  * This code was written by Carlos Saucedo & Zachary Moroski.
- * This robot utilizes Traction wheels.
+ * This robot utilizes Mecanum wheels.
 */
 
 package org.usfirst.frc.team4516.robot;
@@ -19,8 +19,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;//Gyroscope
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -42,6 +41,7 @@ public class Robot extends SampleRobot{
 		private static final int kRearRightChannel = 4;
 		private static final int kLeftJoystickChannel = 0;
 		private static final int kRightJoystickChannel = 1;
+		private static final int kDarioJoystickChannel = 2;
 		private static final int kFrontRightEncoderA = 6;
 		private static final int kFrontRightEncoderB = 7;
 		private static final int kRearRightEncoderA = 2;
@@ -54,21 +54,18 @@ public class Robot extends SampleRobot{
 		private static final int kSlideMotor2 = 3;
 		private static final int forwardArmSolenoidChan = 0;
 		private static final int reverseArmSolenoidChan = 1;
-		private static final int forwardClimbSolenoidChan = 2;
-		private static final int reverseClimbSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
 		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
+		private double slideMovementTime = 7; //TO-DO
 		
-		//RobotDrive constructors
-		private DifferentialDrive m_robotDrive;
-		private SpeedControllerGroup m_leftMotors;
-		private SpeedControllerGroup m_rightMotors;
-		
+		//MecanumDrive constructor
+		private MecanumDrive m_robotDrive;
 
 		//Controllers/etc
 		private Timer m_timer = new Timer();
 		private Joystick m_rightJoystick;
 		private Joystick m_leftJoystick;
+		private Joystick m_darioJoystick;
 		
 		//Drive Train Components
 		private SpeedController m_frontLeft;
@@ -80,7 +77,6 @@ public class Robot extends SampleRobot{
 		
 		//Solenoids
 		private DoubleSolenoid armSolenoid;
-		private DoubleSolenoid climbSolenoid;
 		
 		//Sensor declarations
 		private ADXRS450_Gyro onboardGyro;
@@ -94,6 +90,7 @@ public class Robot extends SampleRobot{
 		//Constructors for joysticks and motor controllers
 				m_rightJoystick = new Joystick(kRightJoystickChannel);
 				m_leftJoystick = new Joystick(kLeftJoystickChannel);
+				m_darioJoystick = new Joystick(kDarioJoystickChannel);
 				m_frontLeft = new Spark(kFrontLeftChannel);
 				m_frontRight = new Spark(kFrontRightChannel);
 				m_rearLeft = new Spark(kRearLeftChannel);
@@ -104,12 +101,10 @@ public class Robot extends SampleRobot{
 				
 				//Solenoids
 				armSolenoid = new DoubleSolenoid(forwardArmSolenoidChan, reverseArmSolenoidChan);
-				climbSolenoid = new DoubleSolenoid(forwardClimbSolenoidChan, reverseClimbSolenoidChan);
 				
 				//Constructor for RobotDrive
-				m_leftMotors = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
-				m_rightMotors = new SpeedControllerGroup(m_frontRight, m_rearRight);
-				m_robotDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+				//Note: X is left-right (strafe), Y is forward-backward, Z is rotation
+				m_robotDrive = new MecanumDrive(m_frontLeft, m_rearLeft, m_frontRight, m_rearRight);
 				
 				//Encoders
 				e_frontRight = new Encoder(kFrontRightEncoderA, kFrontRightEncoderB, false, Encoder.EncodingType.k1X);
@@ -149,49 +144,84 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//First c is on left
                             moveForward(310);
+                            Timer.delay(0.15);
                             turnRight();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(6);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(8);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                             
                         } else if(gameData.charAt(2) == 'R') {//First c is on right
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnRight();
+                            Timer.delay(0.15);
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnLeft();
+                            Timer.delay(0.15);
                             moveForward(60);
+                            Timer.delay(0.15);
                             turnLeft();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(6);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(8);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                     }   
                     break;
                     
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(170);
+                            Timer.delay(0.15);
                             turnRight();
+                            Timer.delay(0.15);
                             moveForward(6);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(8);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                         
                         } else if(gameData.charAt(1) == 'R') {//First Switch is on right
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnRight();
+                            Timer.delay(0.15);
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnLeft();
+                            Timer.delay(0.15);
                             moveBackward(60);
+                            Timer.delay(0.15);
                             turnLeft();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(20);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(16);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                     }
                     break;
                 }
@@ -202,58 +232,102 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//First c is on left
     			            moveForward(80);
+    			            Timer.delay(0.15);
     			            turnLeft();
+    			            Timer.delay(0.15);
     			            moveForward(160);
+    			            Timer.delay(0.15);
     			            turnRight();
+    			            Timer.delay(0.15);
     			            moveForward(230);
+    			            Timer.delay(0.15);
     			            turnRight();
-    			            moveSlideUp(0.5);   
+    			            Timer.delay(0.15);
+    			            moveSlideUp(0.5, slideMovementTime);  
+    			            Timer.delay(0.15);
     			            moveForward(6);
+    			            Timer.delay(0.15);
     			            releaseCube();
+    			            Timer.delay(0.15);
     			            moveBackward(8);
+    			            Timer.delay(0.15);
     			            moveSlideDown(0.5);
+    			            Timer.delay(0.15);
     			
     		          } else if(gameData.charAt(2) == 'R') {//First c is on right
     			            moveForward(80);
+    			            Timer.delay(0.15);
     			            turnRight();
+    			            Timer.delay(0.15);
     			            moveForward(120);
+    			            Timer.delay(0.15);
     			            turnLeft();
+    			            Timer.delay(0.15);
     			            moveForward(230);
+    			            Timer.delay(0.15);
     			            turnLeft();
-    			            moveSlideUp(0.5);
+    			            Timer.delay(0.15);
+    			            moveSlideUp(0.5, slideMovementTime);
+    			            Timer.delay(0.15);
     			            moveForward(6);
+    			            Timer.delay(0.15);
     			            releaseCube();
+    			            Timer.delay(0.15);
     			            moveBackward(8);
+    			            Timer.delay(0.15);
     			            moveSlideDown(0.5);
+    			            Timer.delay(0.15);
     		        }        
                     break;
                     
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(80);
+                            Timer.delay(0.15);
                             turnLeft();
+                            Timer.delay(0.15);
                             moveForward(160);
+                            Timer.delay(0.15);
                             turnRight();
+                            Timer.delay(0.15);
                             moveForward(90);
+                            Timer.delay(0.15);
                             turnRight();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(30);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(16);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                         
                     } else if(gameData.charAt(1) == 'R') {//First Switch is on right
                            moveForward(80);
+                           Timer.delay(0.15);
                            turnRight();
+                           Timer.delay(0.15);
                            moveForward(120);
+                           Timer.delay(0.15);
                            turnLeft();
+                           Timer.delay(0.15);
                            moveForward(90);
+                           Timer.delay(0.15);
                            turnLeft();
-                           moveSlideUp(0.5);
+                           Timer.delay(0.15);
+                           moveSlideUp(0.5, slideMovementTime);
+                           Timer.delay(0.15);
                            moveForward(30);
+                           Timer.delay(0.15);
                            releaseCube();
+                           Timer.delay(0.15);
                            moveBackward(16);
+                           Timer.delay(0.15);
                            moveSlideDown(0.5);
+                           Timer.delay(0.15);
                     }        
                     break;
                 }
@@ -264,56 +338,91 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//First c is on left
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnLeft();
+                            Timer.delay(0.15);
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnRight();
+                            Timer.delay(0.15);
                             moveForward(60);
+                            Timer.delay(0.15);
                             turnRight();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(6);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(8);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                             
                         } else if(gameData.charAt(2) == 'R') {//First c is on right
                             moveForward(310);
+                            Timer.delay(0.15);
                             turnLeft();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(6);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(8);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                     }   
                     break;
                     
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First Switch is on left
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnLeft();
+                            Timer.delay(0.15);
                             moveForward(240);
+                            Timer.delay(0.15);
                             turnRight();
+                            Timer.delay(0.15);
                             moveBackward(60);
+                            Timer.delay(0.15);
                             turnRight();
-                            moveSlideUp(0.5);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementTime);
+                            Timer.delay(0.15);
                             moveForward(20);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(16);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                         
                         } else if(gameData.charAt(1) == 'R') {//First Switch is on right
                             moveForward(170);
+                            Timer.delay(0.15);
                             turnLeft();
+                            Timer.delay(0.15);
                             moveForward(6);
+                            Timer.delay(0.15);
                             releaseCube();
+                            Timer.delay(0.15);
                             moveBackward(8);
+                            Timer.delay(0.15);
                             moveSlideDown(0.5);
+                            Timer.delay(0.15);
                     }
                     break;
                 }
             break;
         }
     		
-            //Timer.delay(0.02);
+            Timer.delay(0.02);
             
         }
     }
@@ -323,12 +432,12 @@ public class Robot extends SampleRobot{
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
-        	//Tank drive using 2 joysticks
-        	m_robotDrive.tankDrive(-m_leftJoystick.getY(), -m_rightJoystick.getY(), false);
+        	//Mecanum drive using 2 joysticks
+        	m_robotDrive.driveCartesian(-m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
         	
         	//Slide rail controls
         	if(m_rightJoystick.getRawButton(3)) {
-        		moveSlideUp(0.5);
+        		moveSlideUp(0.5, slideMovementTime);
         	}else if(m_rightJoystick.getRawButton(2)) {
         		moveSlideDown(0.25);
         	}else if(!m_rightJoystick.getRawButton(3) || !m_rightJoystick.getRawButton(2)) {
@@ -343,7 +452,7 @@ public class Robot extends SampleRobot{
         	}else if(!m_leftJoystick.getTrigger() || m_leftJoystick.getRawButton(2)) {
         		stopCube();
         	}
-            //Timer.delay(0.02);
+            Timer.delay(0.02);
         	
         	
         }
@@ -360,9 +469,9 @@ public class Robot extends SampleRobot{
     public void moveForward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance + distance) {
-    		m_robotDrive.tankDrive(0.5, 0.5, false);
+    		m_robotDrive.driveCartesian(0.5, 0.0, 0.0, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**
@@ -373,9 +482,35 @@ public class Robot extends SampleRobot{
     public void moveBackward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() > initDistance - distance) {
-    		m_robotDrive.tankDrive(-0.5, -0.5, false);
+    		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot left a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void strafeLeft(double distance) {//DOESN'T WORK
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    }
+    
+    /**
+     * Moves the robot right a set distance in units.
+     * 
+     * @param distance Distance, in units.
+     */
+    public void strafeRight(double distance) {//DOESN'T WORK
+    	double initDistance = m_robotEncoder.getDistance();
+    	while(m_robotEncoder.getDistance() < initDistance) {
+    		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
+    	}
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**
@@ -384,9 +519,9 @@ public class Robot extends SampleRobot{
     public void turnRight() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() < initBearing + 90) {
-    		m_robotDrive.tankDrive(0.5, -0.5, false);
+    		m_robotDrive.driveCartesian(0.0, 0.0, 0.5, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);;
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**
@@ -395,9 +530,9 @@ public class Robot extends SampleRobot{
     public void turnLeft() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
-    		m_robotDrive.tankDrive(-0.5, 0.5, false);;
+    		m_robotDrive.driveCartesian(0.0, 0.0, -0.5, 0.0);
     	}
-    	m_robotDrive.tankDrive(0.0, 0.0, false);;
+    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     //Slide rail controls
@@ -411,12 +546,38 @@ public class Robot extends SampleRobot{
     }
     
     /**
+     * Moves the slide down a set speed and time.
+     * @param speed Motor speed
+     * @param time Time to move slide
+     */
+    public void moveSlideUp(double speed, double time) {
+    	double initTime = m_timer.get();
+    	while(m_timer.get() < initTime + time) {
+    		moveSlideUp(speed);
+    	}
+    	stopSlide();
+    }
+    
+    /**
      * Moves the slide down at a set speed.
      * @param speed Motor speed
      */
     public void moveSlideDown(double speed) {
  	   m_slideMotor1.set(-speed);
  	   m_slideMotor2.set(speed);
+    }
+    
+    /**
+     * Moves the slide down at a set speed and time.
+     * @param speed Motor speed
+     * @param time Time to move slide
+     */
+    public void moveSlideDown(double speed, double time) {
+    	double initTime = m_timer.get();
+    	while(m_timer.get() < initTime + time) {
+    		moveSlideUp(speed);
+    	}
+    	stopSlide();
     }
     
     /**
@@ -448,23 +609,5 @@ public class Robot extends SampleRobot{
      */
     public void stopCube(){
         armSolenoid.set(DoubleSolenoid.Value.kOff);
-    }
-    
-    /**
-     * Changes robot into climbing mode using the gearswitch solenoid.
-     */
-    public void switcherClimb(){
-        climbSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
-    
-    /**
-     * Changes robot into cube grabbing mode using the gearswitch solenoid.
-     */
-    public void switcherCube(){
-        climbSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
-    
-    public void stopSwitcher(){
-        climbSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 }

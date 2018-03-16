@@ -195,7 +195,7 @@ public class Robot extends SampleRobot{
                             Timer.delay(0.15);
                             moveForward(10.0);
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementSwitchTime)
+                            moveSlideUp(0.5, slideMovementSwitchTime);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
@@ -434,7 +434,7 @@ public class Robot extends SampleRobot{
         	
         	//Slide rail controls
         	if(m_darioJoystick.getRawButton(3)) {
-        		moveSlideUp(0.5, slideMovementTime);
+        		moveSlideUp(0.5);
         	}else if(m_darioJoystick.getRawButton(2)) {
         		moveSlideDown(0.25);
         	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {

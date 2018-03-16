@@ -56,7 +56,9 @@ public class Robot extends SampleRobot{
 		private static final int reverseArmSolenoidChan = 1;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
 		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
-		private double slideMovementTime = 7; //TO-DO
+		private double slideMovementScaleTime = 7; //TO-DO
+		private double slideMovementSwitchTime = 3; //TO-DO
+		private double jerkDistance = 6.0; //TO-DO
 		
 		//MecanumDrive constructor
 		private MecanumDrive m_robotDrive;
@@ -138,90 +140,91 @@ public class Robot extends SampleRobot{
         	String gameData;
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
     		
+    		jerk();
+    		grabCube();
+    		
     		switch(initPosition) {
             case 'L':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//First c is on left
-                            moveForward(310);
+                        if(gameData.charAt(2) == 'L') {//First scale is on left
+                            moveForward(340.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementScaleTime);
                             Timer.delay(0.15);
-                            moveForward(6);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(8);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementScaleTime);
                             
-                        } else if(gameData.charAt(2) == 'R') {//First c is on right
-                            moveForward(240);
+                        } else if(gameData.charAt(2) == 'R') {//First scale is on right
+                            moveForward(240.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveForward(240);
+                            moveForward(230.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveForward(60);
+                            moveForward(80.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementScaleTime);
                             Timer.delay(0.15);
-                            moveForward(6);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(8);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementScaleTime);
                     }   
                     break;
                     
                     case 'w':
-                        if(gameData.charAt(1) == 'L') {//First Switch is on left
-                            moveForward(170);
+                        if(gameData.charAt(1) == 'L') {//First switch is on left
+                            moveForward(170.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveForward(6);
+                            moveForward(10.0);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementSwitchTime)
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(8);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementSwitchTime);
                         
-                        } else if(gameData.charAt(1) == 'R') {//First Switch is on right
-                            moveForward(240);
+                        } else if(gameData.charAt(1) == 'R') {//First switch is on right
+                            moveForward(240.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveForward(240);
+                            moveForward(220.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveBackward(60);
+                            moveBackward(80.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementSwitchTime);
                             Timer.delay(0.15);
-                            moveForward(20);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(16);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementSwitchTime);
                     }
                     break;
                 }
@@ -230,104 +233,100 @@ public class Robot extends SampleRobot{
             case 'M':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//First c is on left
-    			            moveForward(80);
+                        if(gameData.charAt(2) == 'L') {//First scale is on left
+    			            moveForward(60.0);
     			            Timer.delay(0.15);
     			            turnLeft();
     			            Timer.delay(0.15);
-    			            moveForward(160);
+    			            moveForward(140.0);
     			            Timer.delay(0.15);
     			            turnRight();
     			            Timer.delay(0.15);
-    			            moveForward(230);
+    			            moveForward(260.0);
     			            Timer.delay(0.15);
     			            turnRight();
     			            Timer.delay(0.15);
-    			            moveSlideUp(0.5, slideMovementTime);  
+    			            moveSlideUp(0.5, slideMovementScaleTime);  
     			            Timer.delay(0.15);
-    			            moveForward(6);
+    			            moveForward(10.0);
     			            Timer.delay(0.15);
     			            releaseCube();
     			            Timer.delay(0.15);
-    			            moveBackward(8);
+    			            moveBackward(18.0);
     			            Timer.delay(0.15);
-    			            moveSlideDown(0.5);
-    			            Timer.delay(0.15);
+    			            moveSlideDown(0.5, slideMovementScaleTime);
     			
-    		          } else if(gameData.charAt(2) == 'R') {//First c is on right
-    			            moveForward(80);
+    		          } else if(gameData.charAt(2) == 'R') {//First scale is on right
+    			            moveForward(60.0);
     			            Timer.delay(0.15);
     			            turnRight();
     			            Timer.delay(0.15);
-    			            moveForward(120);
+    			            moveForward(80.0);
     			            Timer.delay(0.15);
     			            turnLeft();
     			            Timer.delay(0.15);
-    			            moveForward(230);
+    			            moveForward(260.0);
     			            Timer.delay(0.15);
     			            turnLeft();
     			            Timer.delay(0.15);
-    			            moveSlideUp(0.5, slideMovementTime);
+    			            moveSlideUp(0.5, slideMovementScaleTime);
     			            Timer.delay(0.15);
-    			            moveForward(6);
+    			            moveForward(10.0);
     			            Timer.delay(0.15);
     			            releaseCube();
     			            Timer.delay(0.15);
-    			            moveBackward(8);
+    			            moveBackward(18.0);
     			            Timer.delay(0.15);
-    			            moveSlideDown(0.5);
-    			            Timer.delay(0.15);
+    			            moveSlideDown(0.5, slideMovementScaleTime);
     		        }        
                     break;
                     
                     case 'w':
-                        if(gameData.charAt(1) == 'L') {//First Switch is on left
-                            moveForward(80);
+                        if(gameData.charAt(1) == 'L') {//First switch is on left
+                            moveForward(60.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveForward(160);
+                            moveForward(140.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveForward(90);
+                            moveForward(100.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementSwitchTime);
                             Timer.delay(0.15);
-                            moveForward(30);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(16);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementSwitchTime);
                         
-                    } else if(gameData.charAt(1) == 'R') {//First Switch is on right
-                           moveForward(80);
+                    } else if(gameData.charAt(1) == 'R') {//First switch is on right
+                           moveForward(60.0);
                            Timer.delay(0.15);
                            turnRight();
                            Timer.delay(0.15);
-                           moveForward(120);
+                           moveForward(80.0);
                            Timer.delay(0.15);
                            turnLeft();
                            Timer.delay(0.15);
-                           moveForward(90);
+                           moveForward(100.0);
                            Timer.delay(0.15);
                            turnLeft();
                            Timer.delay(0.15);
-                           moveSlideUp(0.5, slideMovementTime);
+                           moveSlideUp(0.5, slideMovementSwitchTime);
                            Timer.delay(0.15);
-                           moveForward(30);
+                           moveForward(10.0);
                            Timer.delay(0.15);
                            releaseCube();
                            Timer.delay(0.15);
-                           moveBackward(16);
+                           moveBackward(18.0);
                            Timer.delay(0.15);
-                           moveSlideDown(0.5);
-                           Timer.delay(0.15);
+                           moveSlideDown(0.5, slideMovementSwitchTime);
                     }        
                     break;
                 }
@@ -336,86 +335,84 @@ public class Robot extends SampleRobot{
             case 'R':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//First c is on left
-                            moveForward(240);
+                        if(gameData.charAt(2) == 'L') {//First scale is on left
+                            moveForward(240.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveForward(240);
+                            moveForward(230.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveForward(60);
+                            moveForward(80.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementScaleTime);
                             Timer.delay(0.15);
-                            moveForward(6);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(8);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementScaleTime);
                             
-                        } else if(gameData.charAt(2) == 'R') {//First c is on right
-                            moveForward(310);
+                        } else if(gameData.charAt(2) == 'R') {//First scale is on right
+                            moveForward(340.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementScaleTime);
                             Timer.delay(0.15);
-                            moveForward(6);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(8);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementScaleTime);
                     }   
                     break;
                     
                     case 'w':
-                        if(gameData.charAt(1) == 'L') {//First Switch is on left
-                            moveForward(240);
+                        if(gameData.charAt(1) == 'L') {//First switch is on left
+                            moveForward(240.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveForward(240);
+                            moveForward(220.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveBackward(60);
+                            moveBackward(80.0);
                             Timer.delay(0.15);
                             turnRight();
                             Timer.delay(0.15);
-                            moveSlideUp(0.5, slideMovementTime);
+                            moveSlideUp(0.5, slideMovementSwitchTime);
                             Timer.delay(0.15);
-                            moveForward(20);
+                            moveForward(10.0);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(16);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementSwitchTime);
                         
-                        } else if(gameData.charAt(1) == 'R') {//First Switch is on right
-                            moveForward(170);
+                        } else if(gameData.charAt(1) == 'R') {//First switch is on right
+                            moveForward(170.0);
                             Timer.delay(0.15);
                             turnLeft();
                             Timer.delay(0.15);
-                            moveForward(6);
+                            moveForward(10.0);
+                            Timer.delay(0.15);
+                            moveSlideUp(0.5, slideMovementSwitchTime);
                             Timer.delay(0.15);
                             releaseCube();
                             Timer.delay(0.15);
-                            moveBackward(8);
+                            moveBackward(18.0);
                             Timer.delay(0.15);
-                            moveSlideDown(0.5);
-                            Timer.delay(0.15);
+                            moveSlideDown(0.5, slideMovementSwitchTime);
                     }
                     break;
                 }
@@ -436,20 +433,20 @@ public class Robot extends SampleRobot{
         	m_robotDrive.driveCartesian(-m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
         	
         	//Slide rail controls
-        	if(m_rightJoystick.getRawButton(3)) {
+        	if(m_darioJoystick.getRawButton(3)) {
         		moveSlideUp(0.5, slideMovementTime);
-        	}else if(m_rightJoystick.getRawButton(2)) {
+        	}else if(m_darioJoystick.getRawButton(2)) {
         		moveSlideDown(0.25);
-        	}else if(!m_rightJoystick.getRawButton(3) || !m_rightJoystick.getRawButton(2)) {
+        	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {
         		stopSlide();
         	}
         	
         	//Cube grabbing controls
-        	if(m_leftJoystick.getTrigger()) {
+        	if(m_darioJoystick.getTrigger()) {
         		grabCube();
-        	}else if(m_leftJoystick.getRawButton(2)) {
+        	}else if(m_darioJoystick.getRawButton(2)) {
         		releaseCube();
-        	}else if(!m_leftJoystick.getTrigger() || m_leftJoystick.getRawButton(2)) {
+        	}else if(!m_darioJoystick.getTrigger() || m_darioJoystick.getRawButton(2)) {
         		stopCube();
         	}
             Timer.delay(0.02);
@@ -609,5 +606,13 @@ public class Robot extends SampleRobot{
      */
     public void stopCube(){
         armSolenoid.set(DoubleSolenoid.Value.kOff);
+    }
+    
+    /**
+     * Jerks the robot in order to pick up the cube.
+     */
+    public void jerk(){
+        moveForward(jerkDistance);
+        moveBackward(jerkDistance);
     }
 }

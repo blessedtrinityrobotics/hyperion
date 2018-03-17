@@ -6,7 +6,7 @@
 package org.usfirst.frc.team4516.robot;
 import edu.wpi.first.wpilibj.Encoder;
 public class MecanumEncoder{
-	//Encoder vars
+	//Encoder variables
 	private Encoder m_frontRight;
 	private Encoder m_rearRight;
 	private Encoder m_frontLeft;

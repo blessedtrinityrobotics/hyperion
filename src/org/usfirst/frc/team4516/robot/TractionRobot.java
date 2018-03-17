@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
 @SuppressWarnings("deprecation")
-public class Robot extends SampleRobot{
+public class TractionRobot extends SampleRobot{
         /*
          * Variables for autonomous cases. 
          * initPosition values: L, M, R (fairly straightforward)

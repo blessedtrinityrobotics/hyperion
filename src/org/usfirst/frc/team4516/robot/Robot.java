@@ -32,7 +32,7 @@ public class Robot extends SampleRobot{
          * initGoal values: c, w (c -> scale; w -> switch)
          */
         char initPosition = 'L';
-        char initGoal = 'c';
+        char initGoal = 'w';
         
 	    //Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
@@ -52,12 +52,12 @@ public class Robot extends SampleRobot{
 		private static final int kRearLeftEncoderB = 1;
 		private static final int kSlideMotor1 = 2;
 		private static final int kSlideMotor2 = 3;
-		private static final int forwardArmSolenoidChan = 0;
-		private static final int reverseArmSolenoidChan = 1;
+		private static final int forwardArmSolenoidChan = 2;
+		private static final int reverseArmSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
 		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
-		private double slideMovementScaleTime = 7; //TO-DO
-		private double slideMovementSwitchTime = 3; //TO-DO
+		private double slideMovementScaleTime = 7.0; //TO-DO
+		private double slideMovementSwitchTime = 3.5; //TO-DO
 		private double jerkDistance = 6.0; //TO-DO
 		
 		//MecanumDrive constructor
@@ -105,7 +105,7 @@ public class Robot extends SampleRobot{
 				armSolenoid = new DoubleSolenoid(forwardArmSolenoidChan, reverseArmSolenoidChan);
 				
 				//Constructor for RobotDrive
-				//Note: X is left-right (strafe), Y is forward-backward, Z is rotation
+				//Note: X is forward-backward, Y is left-right(strafe), Z is rotation
 				m_robotDrive = new MecanumDrive(m_frontLeft, m_rearLeft, m_frontRight, m_rearRight);
 				
 				//Encoders
@@ -135,15 +135,11 @@ public class Robot extends SampleRobot{
     public void autonomous() { 
 		m_timer.reset();
 		m_timer.start();
-		
         while (isAutonomous() && isEnabled()) {
         	String gameData;
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
-    		
-    		jerk();
-    		grabCube();
-    		
-    		switch(initPosition) {
+    		System.out.println("Field Data: " + gameData);
+    		/**switch(initPosition) {
             case 'L':
                 switch(initGoal){
                     case 'c':
@@ -159,8 +155,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementScaleTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementScaleTime);
                             
                         } else if(gameData.charAt(2) == 'R') {//First scale is on right
                             moveForward(240.0);
@@ -182,8 +178,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementScaleTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementScaleTime);
                     }   
                     break;
                     
@@ -200,13 +196,12 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementSwitchTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementSwitchTime);
                         
                         } else if(gameData.charAt(1) == 'R') {//First switch is on right
                             moveForward(240.0);
                             Timer.delay(0.15);
-                            turnRight();
                             Timer.delay(0.15);
                             moveForward(220.0);
                             Timer.delay(0.15);
@@ -223,8 +218,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementSwitchTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementSwitchTime);
                     }
                     break;
                 }
@@ -253,8 +248,8 @@ public class Robot extends SampleRobot{
     			            releaseCube();
     			            Timer.delay(0.15);
     			            moveBackward(18.0);
-    			            Timer.delay(0.15);
-    			            moveSlideDown(0.5, slideMovementScaleTime);
+    			            //Timer.delay(0.15);
+    			            //moveSlideDown(0.5, slideMovementScaleTime);
     			
     		          } else if(gameData.charAt(2) == 'R') {//First scale is on right
     			            moveForward(60.0);
@@ -276,8 +271,8 @@ public class Robot extends SampleRobot{
     			            releaseCube();
     			            Timer.delay(0.15);
     			            moveBackward(18.0);
-    			            Timer.delay(0.15);
-    			            moveSlideDown(0.5, slideMovementScaleTime);
+    			            //Timer.delay(0.15);
+    			            //moveSlideDown(0.5, slideMovementScaleTime);
     		        }        
                     break;
                     
@@ -302,8 +297,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementSwitchTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementSwitchTime);
                         
                     } else if(gameData.charAt(1) == 'R') {//First switch is on right
                            moveForward(60.0);
@@ -325,8 +320,8 @@ public class Robot extends SampleRobot{
                            releaseCube();
                            Timer.delay(0.15);
                            moveBackward(18.0);
-                           Timer.delay(0.15);
-                           moveSlideDown(0.5, slideMovementSwitchTime);
+                           //Timer.delay(0.15);
+                           //moveSlideDown(0.5, slideMovementSwitchTime);
                     }        
                     break;
                 }
@@ -355,8 +350,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementScaleTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementScaleTime);
                             
                         } else if(gameData.charAt(2) == 'R') {//First scale is on right
                             moveForward(340.0);
@@ -370,8 +365,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementScaleTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementScaleTime);
                     }   
                     break;
                     
@@ -396,8 +391,8 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementSwitchTime);
+                            //Timer.delay(0.15);
+                            //moveSlideDown(0.5, slideMovementSwitchTime);
                         
                         } else if(gameData.charAt(1) == 'R') {//First switch is on right
                             moveForward(170.0);
@@ -411,26 +406,25 @@ public class Robot extends SampleRobot{
                             releaseCube();
                             Timer.delay(0.15);
                             moveBackward(18.0);
-                            Timer.delay(0.15);
-                            moveSlideDown(0.5, slideMovementSwitchTime);
+                            //Timer.delay(0.15);
+                           // moveSlideDown(0.5, slideMovementSwitchTime);
                     }
                     break;
                 }
             break;
-        }
+        }*/
     		
             Timer.delay(0.02);
             
         }
     }
-
     /**
      * This function is called once each time the robot enters teleop mode.
      */
     public void operatorControl() {
         while (isOperatorControl() && isEnabled()) {
         	//Mecanum drive using 2 joysticks
-        	m_robotDrive.driveCartesian(-m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
+        	m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
         	
         	//Slide rail controls
         	if(m_darioJoystick.getRawButton(3)) {
@@ -444,9 +438,9 @@ public class Robot extends SampleRobot{
         	//Cube grabbing controls
         	if(m_darioJoystick.getTrigger()) {
         		grabCube();
-        	}else if(m_darioJoystick.getRawButton(2)) {
+        	}else if(m_darioJoystick.getRawButton(4)) {
         		releaseCube();
-        	}else if(!m_darioJoystick.getTrigger() || m_darioJoystick.getRawButton(2)) {
+        	}else if(!m_darioJoystick.getTrigger() || !m_darioJoystick.getRawButton(4)) {
         		stopCube();
         	}
             Timer.delay(0.02);
@@ -455,6 +449,33 @@ public class Robot extends SampleRobot{
         }
     }
     
+    public void test() {
+    	moveForward(12.0); 
+    	while(isTest() && isEnabled()) {
+    		//Mecanum drive using 2 joysticks
+    		m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
+        	
+        	//Slide rail controls
+        	if(m_darioJoystick.getRawButton(3)) {
+        		moveSlideUp(0.5);
+        	}else if(m_darioJoystick.getRawButton(2)) {
+        		moveSlideDown(0.25);
+        	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {
+        		stopSlide();
+        	}
+        	
+        	if(m_darioJoystick.getTrigger()) {
+        		grabCube();
+        	}else if(m_darioJoystick.getRawButton(4)) {
+        		releaseCube();
+        	}else if(!m_darioJoystick.getTrigger() || !m_darioJoystick.getRawButton(4)) {
+        		stopCube();
+        	}
+    		//System.out.println("Gyro: " + onboardGyro.getAngle());
+    		//System.out.println("Encoder: " + m_robotEncoder.getDistance());
+        	Timer.delay(0.02);
+    	}
+    }
     
     //Functions
     
@@ -466,8 +487,11 @@ public class Robot extends SampleRobot{
     public void moveForward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance + distance) {
-    		m_robotDrive.driveCartesian(0.5, 0.0, 0.0, 0.0);
+    		System.out.println("Distance: " + m_robotEncoder.getDistance());
+    		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
+    		Timer.delay(0.01);
     	}
+    	moveBackward(1);
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
@@ -479,7 +503,9 @@ public class Robot extends SampleRobot{
     public void moveBackward(double distance) {
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() > initDistance - distance) {
-    		m_robotDrive.driveCartesian(-0.5, 0.0, 0.0, 0.0);
+    		System.out.println("Distance: " + m_robotEncoder.getDistance());
+    		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
+    		Timer.delay(0.01);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
@@ -493,6 +519,7 @@ public class Robot extends SampleRobot{
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
+    		Timer.delay(0.01);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
@@ -506,6 +533,7 @@ public class Robot extends SampleRobot{
     	double initDistance = m_robotEncoder.getDistance();
     	while(m_robotEncoder.getDistance() < initDistance) {
     		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
+    		Timer.delay(0.01);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
@@ -516,7 +544,9 @@ public class Robot extends SampleRobot{
     public void turnRight() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() < initBearing + 90) {
+    		System.out.println("Gyro: " + onboardGyro.getAngle());
     		m_robotDrive.driveCartesian(0.0, 0.0, 0.5, 0.0);
+    		Timer.delay(0.01);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
@@ -527,7 +557,9 @@ public class Robot extends SampleRobot{
     public void turnLeft() {
     	double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
+    		System.out.println("Gyro: " + onboardGyro.getAngle());
     		m_robotDrive.driveCartesian(0.0, 0.0, -0.5, 0.0);
+    		Timer.delay(0.01);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }

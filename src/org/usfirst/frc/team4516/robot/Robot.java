@@ -58,7 +58,6 @@ public class Robot extends SampleRobot{
 		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
 		private double slideMovementScaleTime = 7.0; //TO-DO
 		private double slideMovementSwitchTime = 3.5; //TO-DO
-		private double jerkDistance = 6.0; //TO-DO
 		
 		//MecanumDrive constructor
 		private MecanumDrive m_robotDrive;
@@ -135,11 +134,10 @@ public class Robot extends SampleRobot{
     public void autonomous() { 
 		m_timer.reset();
 		m_timer.start();
-        while (isAutonomous() && isEnabled()) {
         	String gameData;
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
     		System.out.println("Field Data: " + gameData);
-    		/**switch(initPosition) {
+    		switch(initPosition) {
             case 'L':
                 switch(initGoal){
                     case 'c':
@@ -412,10 +410,6 @@ public class Robot extends SampleRobot{
                     break;
                 }
             break;
-        }*/
-    		
-            Timer.delay(0.02);
-            
         }
     }
     /**
@@ -450,7 +444,7 @@ public class Robot extends SampleRobot{
     }
     
     public void test() {
-    	moveForward(12.0); 
+    	//moveForward(12.0); 
     	while(isTest() && isEnabled()) {
     		//Mecanum drive using 2 joysticks
     		m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
@@ -489,9 +483,9 @@ public class Robot extends SampleRobot{
     	while(m_robotEncoder.getDistance() < initDistance + distance) {
     		System.out.println("Distance: " + m_robotEncoder.getDistance());
     		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
-    		Timer.delay(0.01);
+    		Timer.delay(0.02);
     	}
-    	moveBackward(1);
+    	m_robotDrive.driveCartesian(0.0, -0.1, 0.0, 0.0);//Brake
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
@@ -505,36 +499,9 @@ public class Robot extends SampleRobot{
     	while(m_robotEncoder.getDistance() > initDistance - distance) {
     		System.out.println("Distance: " + m_robotEncoder.getDistance());
     		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
-    		Timer.delay(0.01);
+    		Timer.delay(0.02);
     	}
-    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
-    }
-    
-    /**
-     * Moves the robot left a set distance in units.
-     * 
-     * @param distance Distance, in units.
-     */
-    public void strafeLeft(double distance) {//DOESN'T WORK
-    	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() < initDistance) {
-    		m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
-    		Timer.delay(0.01);
-    	}
-    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
-    }
-    
-    /**
-     * Moves the robot right a set distance in units.
-     * 
-     * @param distance Distance, in units.
-     */
-    public void strafeRight(double distance) {//DOESN'T WORK
-    	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() < initDistance) {
-    		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
-    		Timer.delay(0.01);
-    	}
+    	m_robotDrive.driveCartesian(0.0, 0.1, 0.0, 0.0);//Brake
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
@@ -546,7 +513,7 @@ public class Robot extends SampleRobot{
     	while(onboardGyro.getAngle() < initBearing + 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
     		m_robotDrive.driveCartesian(0.0, 0.0, 0.5, 0.0);
-    		Timer.delay(0.01);
+    		Timer.delay(0.02);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
@@ -559,7 +526,7 @@ public class Robot extends SampleRobot{
     	while(onboardGyro.getAngle() > initBearing - 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
     		m_robotDrive.driveCartesian(0.0, 0.0, -0.5, 0.0);
-    		Timer.delay(0.01);
+    		Timer.delay(0.02);
     	}
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
@@ -638,13 +605,5 @@ public class Robot extends SampleRobot{
      */
     public void stopCube(){
         armSolenoid.set(DoubleSolenoid.Value.kOff);
-    }
-    
-    /**
-     * Jerks the robot in order to pick up the cube.
-     */
-    public void jerk(){
-        moveForward(jerkDistance);
-        moveBackward(jerkDistance);
     }
 }

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.UsbCamera;
+import edu.wpi.cscore.UsbCamera;
 
 
 @SuppressWarnings("deprecation")
@@ -33,8 +33,8 @@ public class Robot extends SampleRobot{
          * initPosition values: L, M, R (fairly straightforward)
          * initGoal values: c, w (c -> scale; w -> switch)
          */
-        char initPosition = 'M';
-        char initGoal = 'w';
+        char initPosition = 'L';
+        char initGoal = 'c';
         
 	    //Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
@@ -54,8 +54,6 @@ public class Robot extends SampleRobot{
 		private static final int kRearLeftEncoderB = 1;
 		private static final int kSlideMotor1 = 2;
 		private static final int kSlideMotor2 = 3;
-		private static final int kIntakeMotorRight = 69; //Placeholder
-		private static final int kIntakeMotorLeft = 420; //Placeholder
 		private static final int forwardArmSolenoidChan = 2;
 		private static final int reverseArmSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
@@ -79,8 +77,6 @@ public class Robot extends SampleRobot{
 		private SpeedController m_rearRight;
 		private SpeedController m_slideMotor1;
 		private SpeedController m_slideMotor2;
-		private SpeedController m_intakeMotorRight;
-		private SpeedController m_intakeMotorLeft;
 		
 		//Solenoids
 		private DoubleSolenoid armSolenoid;
@@ -107,8 +103,6 @@ public class Robot extends SampleRobot{
 				m_slideMotor1 = new Spark(kSlideMotor1);
 				m_slideMotor2 = new Spark(kSlideMotor2);
 				m_slideMotor2.setInverted(true);
-				m_intakeMotorRight = new Spark(kIntakeMotorRight);
-				m_intakeMotorLeft = new Spark(kIntakeMotorLeft);
 				
 				
 				//Solenoids
@@ -143,8 +137,8 @@ public class Robot extends SampleRobot{
 				  */
 				 try{
 				     UsbCamera camera = new UsbCamera("cam0", 0);
-				     camera.setFPS(15);
-				     camera.setResolution(320, 240) //320 = width, 240 = height
+				     camera.setFPS(30); //30 FPS
+				     camera.setResolution(320, 240); //320 = width, 240 = height
 				     CameraServer.getInstance().startAutomaticCapture(camera);
 					 //CameraServer camera = CameraServer.getInstance();
 					 //camera.startAutomaticCapture();
@@ -171,7 +165,7 @@ public class Robot extends SampleRobot{
                             turnRight();
                             moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(10.0);
-                            releaseCube();
+                            releaseCube(true);
                             moveBackward(18.0);
                             
                         } else if(gameData.charAt(2) == 'R') {//First scale is on right
@@ -183,7 +177,7 @@ public class Robot extends SampleRobot{
                             turnLeft();
                             moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(10.0);
-                            releaseCube();
+                            releaseCube(true);
                             moveBackward(18.0);
                     }   
                     break;
@@ -191,7 +185,7 @@ public class Robot extends SampleRobot{
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First switch is on left
                             moveForward(106.0);
-                            releaseCube();
+                            releaseCube(true);
                         
                         } else if(gameData.charAt(1) == 'R') {//First switch is on right
                             moveForward(24.0);
@@ -199,7 +193,7 @@ public class Robot extends SampleRobot{
                             moveForward(86.0);
                             turnLeft();
                             moveForward(82.0);
-                            releaseCube();
+                            releaseCube(true);
                     }
                     break;
                 }
@@ -217,7 +211,7 @@ public class Robot extends SampleRobot{
     			            turnRight();
     			            moveSlideUp(0.5, slideMovementScaleTime);
     			            moveForward(10.0);
-    			            releaseCube();
+    			            releaseCube(true);
     			            moveBackward(18.0);
     			
     		          } else if(gameData.charAt(2) == 'R') {//First scale is on right
@@ -229,7 +223,7 @@ public class Robot extends SampleRobot{
     			            turnLeft();
     			            moveSlideUp(0.5, slideMovementScaleTime);
     			            moveForward(10.0);
-    			            releaseCube();
+    			            releaseCube(true);
     			            moveBackward(18.0);
     		        }        
                     break;
@@ -241,14 +235,14 @@ public class Robot extends SampleRobot{
                             moveForward(26.0);
                             turnRight();
                             moveForward(82.0);
-                            releaseCube();
+                            releaseCube(true);
                     } else if(gameData.charAt(1) == 'R') {//First switch is on right
                            moveForward(24.0);
                            turnRight();
                            moveForward(26.0);
                            turnLeft();
                            moveForward(82.0);
-                           releaseCube();
+                           releaseCube(true);
                     }        
                     break;
                 }
@@ -266,7 +260,7 @@ public class Robot extends SampleRobot{
                             turnRight();
                             moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(10.0);
-                            releaseCube();
+                            releaseCube(true);
                             moveBackward(18.0);
                             
                         } else if(gameData.charAt(2) == 'R') {//First scale is on right
@@ -274,7 +268,7 @@ public class Robot extends SampleRobot{
                             turnLeft();
                             moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(10.0);
-                            releaseCube();
+                            releaseCube(true);
                             moveBackward(18.0);
                     }   
                     break;
@@ -286,11 +280,11 @@ public class Robot extends SampleRobot{
                             moveForward(86.0);
                             turnRight();
                             moveForward(82.0);
-                            releaseCube();
+                            releaseCube(true);
                         
                         } else if(gameData.charAt(1) == 'R') {//First switch is on right
                             moveForward(106.0);
-                            releaseCube();
+                            releaseCube(true);
                     }
                     break;
                 }
@@ -311,25 +305,16 @@ public class Robot extends SampleRobot{
         	}else if(m_darioJoystick.getRawButton(2)) {
         		moveSlideDown(0.5);
         	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {
-        		stopSlide();
+        		stopSlide(false);
         	}
         	
         	//Cube grabbing controls
         	if(m_darioJoystick.getTrigger()) {
-        		grabCube();
+        		grabCube(false);
         	}else if(m_darioJoystick.getRawButton(4)) {
-        		releaseCube();
+        		releaseCube(false);
         	}else if(!m_darioJoystick.getTrigger() || !m_darioJoystick.getRawButton(4)) {
-        		stopCube();
-        	}
-        	
-        	//Intake mechanism controls
-        	if(m_darioJoystick.getRawButton(5)){
-        	    m_intakeMotorRight.set(0.5);
-        	    m_intakeMotorLeft.set(0.5);
-        	}else if(!m_darioJoystick.vetRawButton(5)){
-        	    m_intakeMotorRight.set(0.0);
-        	    m_intakeMotorLeft.set(0.0);
+        		stopCube(false);
         	}
             Timer.delay(0.02);
         }
@@ -340,7 +325,7 @@ public class Robot extends SampleRobot{
              * Test code goes here.
              */
         	Timer.delay(0.02);
-    	}
+    	
     }
     
     //Functions
@@ -368,7 +353,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveBackward(double distance) {
-        if(m_timer.getMatchTime() < 15.0){
+        if(Timer.getMatchTime() < 15.0){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() > initDistance - distance) {
       		    m_robotDrive.driveCartesian(0.0, -0.25, 0.0, 0.0);
@@ -379,6 +364,42 @@ public class Robot extends SampleRobot{
     	   m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
         }
     }
+    
+    /**
+     * Strafes the robot to the right.
+     * @param distance Distance to strafe.
+     */
+    public void strafeRight(double distance) {
+    	if(Timer.getMatchTime() < 15.0) {
+    		m_robotEncoder.reset();
+    		double initX = m_robotEncoder.getPositionX();
+    		  while(m_robotEncoder.getPositionX() < initX + distance) {
+        		    m_robotDrive.driveCartesian(0.25, 0.0, 0.0, 0.0);
+        		    Timer.delay(0.02);
+    		  }
+    		  m_robotDrive.driveCartesian(-0.1, 0.0, 0.0, 0.0);
+    		  Timer.delay(0.02);
+    		  m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    	}  
+    }
+   
+    /**
+     * Strafes the robot to the left a set distance.
+     * @param distance Distance to strafe.
+     */
+    public void strafeLeft(double distance) {
+    	if(Timer.getMatchTime() < 15.0) {
+    		m_robotEncoder.reset();
+    		double initX = m_robotEncoder.getPositionX();
+    		  while(m_robotEncoder.getPositionX() > initX - distance) {
+        		    m_robotDrive.driveCartesian(-0.25, 0.0, 0.0, 0.0);
+        		    Timer.delay(0.02);
+    		  }
+    		  m_robotDrive.driveCartesian(0.1, 0.0, 0.0, 0.0);
+    		  Timer.delay(0.02);
+    		  m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    	}  
+    }  
     
     /**
      * Turns the robot to the right 90 degrees
@@ -401,7 +422,7 @@ public class Robot extends SampleRobot{
      * Turns the robot to the left 90 degrees.
      */
     public void turnLeft() {
-        if(m_timer.getMatchTime() < 15.0){
+        if(Timer.getMatchTime() < 15.0){
             double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
@@ -432,12 +453,14 @@ public class Robot extends SampleRobot{
      * @param time Time to move slide
      */
     public void moveSlideUp(double speed, double time) {
-    	double initTime = m_timer.get();
-    	while(m_timer.get() < initTime + time) {
-    		moveSlideUp(speed);
-    		Timer.delay(0.02);
+    	if(Timer.getMatchTime() < 15.0) {
+    		double initTime = m_timer.get();
+        	while(m_timer.get() < initTime + time) {
+        		moveSlideUp(speed);
+        		Timer.delay(0.02);
+        	}
+        	stopSlide(true);
     	}
-    	stopSlide();
     }
     
     /**
@@ -455,21 +478,29 @@ public class Robot extends SampleRobot{
      * @param time Time to move slide
      */
     public void moveSlideDown(double speed, double time) {
-    	double initTime = m_timer.get();
-    	while(m_timer.get() < initTime + time) {
-    		moveSlideUp(speed);  
-    		Timer.delay(0.02);
+    	if(Timer.getMatchTime() < 15.0) {
+    		double initTime = m_timer.get();
+        	while(m_timer.get() < initTime + time) {
+        		moveSlideUp(speed);  
+        		Timer.delay(0.02);
+        	}
+        	stopSlide(true);
     	}
-    	stopSlide();
     }
     
     /**
      * Stops the slide.
      */
-    public void stopSlide() {
- 	   m_slideMotor1.set(0.0);
- 	   m_slideMotor2.set(0.0);
- 	   
+    public void stopSlide(boolean autonomous) {
+       if(autonomous) {
+    	   if(Timer.getMatchTime() < 15.0) {
+    		   m_slideMotor1.set(0.0);
+    	 	   m_slideMotor2.set(0.0);
+    	   }
+       }else if(!autonomous) {
+    	   m_slideMotor1.set(0.0);
+     	   m_slideMotor2.set(0.0);
+       }
     }
     
     //Pneumatic controls
@@ -479,11 +510,11 @@ public class Robot extends SampleRobot{
      */
     public void grabCube(boolean autonomous) {
         if(autonomous){
-            if(m_timer.getMatchTime() < 15.0){
+            if(Timer.getMatchTime() < 15.0){
                 armSolenoid.set(DoubleSolenoid.Value.kForward);
-            
-        }else if(!autonomous){
+            }else if(!autonomous){
             armSolenoid.set(DoubleSolenoid.Value.kForward);
+            }
         }
     }
     
@@ -493,7 +524,7 @@ public class Robot extends SampleRobot{
      */
     public void releaseCube(boolean autonomous) {
         if(autonomous){
-            if(m_timer.getMatchTime() < 15.0){
+            if(Timer.getMatchTime() < 15.0){
                 armSolenoid.set(DoubleSolenoid.Value.kReverse);
             }
         }else if(!autonomous){
@@ -505,7 +536,13 @@ public class Robot extends SampleRobot{
     /**
      * Stops arm solenoid operation.
      */
-    public void stopCube(){
-        armSolenoid.set(DoubleSolenoid.Value.kOff);
+    public void stopCube(boolean autonomous){
+    	if(autonomous) {
+    		if(Timer.getMatchTime() < 15.0) {
+    			armSolenoid.set(DoubleSolenoid.Value.kOff);
+    		}
+    	}else if(!autonomous) {
+    		armSolenoid.set(DoubleSolenoid.Value.kOff);
+    	}
     }
 }

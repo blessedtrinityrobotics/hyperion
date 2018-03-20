@@ -13,3 +13,5 @@ zachary
 moroski
 traction
 solenoids
+intake
+strafes

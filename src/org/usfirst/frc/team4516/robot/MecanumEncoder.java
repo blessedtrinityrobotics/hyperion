@@ -23,9 +23,18 @@ public class MecanumEncoder{
 		m_positionY = 0;
 	}
 	
-	public void reset() {//Resets the positionX and positionY values.
+	
+	/**
+	 * Resets encoders and positionX and positionY values.
+	 */
+	public void reset() {
 		m_positionX = 0;
 		m_positionY = 0;
+		m_frontRight.reset();
+		m_rearRight.reset();
+		m_frontLeft.reset();
+		m_rearLeft.reset();
+		
 	}
 	
 	public double getVelocityX() {
@@ -33,21 +42,30 @@ public class MecanumEncoder{
 		return(velocity);
 	}
 	
+	public double getDistanceY() {
+		double dY = ((m_frontRight.getDistance() + m_rearRight.getDistance() + m_frontLeft.getDistance() + m_rearLeft.getDistance())/4.0);
+		return(dY);
+	}
+	
 	public double getVelocityY() {
 		double velocity = ((m_frontLeft.getRate() - m_frontRight.getRate() - m_rearLeft.getRate() + m_rearRight.getRate())/4.0);
 		return(velocity);
 	}
 	
+	public double getDistanceX() {
+		double dX = ((m_frontLeft.getDistance() - m_frontRight.getDistance() - m_rearLeft.getDistance() + m_rearRight.getDistance())/4.0);
+		return(dX);
+	}
+	
 	/**
-	 * Updates the current position of the robot given the current heading and change in time.
-	 * 
-	 * @param changeInTime Elapsed time in seconds.
+	 * Updates the current position of the robot given the current heading.
 	 * @param robotHeading Robot heading in degrees.
 	 */
-	public void updatePosition(double changeInTime, double robotHeading) {
+	
+	public void updatePosition(double robotHeading) {
 		//Compute change in Distance with the robot as FoR
-		double robotDeltaX = (getVelocityX() * changeInTime);
-		double robotDeltaY = (getVelocityY() * changeInTime);
+		double robotDeltaX = (getDistanceX());
+		double robotDeltaY = (getDistanceY());
 		m_positionX += robotDeltaX * Math.sin(robotHeading / 180.0 * Math.PI);
 		m_positionY += robotDeltaX * Math.cos(robotHeading / 180.0 * Math.PI);
 		m_positionX += robotDeltaY * Math.cos(robotHeading / 180.0 * Math.PI);

@@ -54,6 +54,8 @@ public class Robot extends SampleRobot{
 		private static final int kRearLeftEncoderB = 1;
 		private static final int kSlideMotor1 = 2;
 		private static final int kSlideMotor2 = 3;
+		private static final int kIntakeMotorRight = 69; //Placeholder
+		private static final int kIntakeMotorLeft = 420; //Placeholder
 		private static final int forwardArmSolenoidChan = 2;
 		private static final int reverseArmSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
@@ -77,6 +79,8 @@ public class Robot extends SampleRobot{
 		private SpeedController m_rearRight;
 		private SpeedController m_slideMotor1;
 		private SpeedController m_slideMotor2;
+		private SpeedController m_intakeMotorRight;
+		private SpeedController m_intakeMotorLeft;
 		
 		//Solenoids
 		private DoubleSolenoid armSolenoid;
@@ -103,6 +107,9 @@ public class Robot extends SampleRobot{
 				m_slideMotor1 = new Spark(kSlideMotor1);
 				m_slideMotor2 = new Spark(kSlideMotor2);
 				m_slideMotor2.setInverted(true);
+				m_intakeMotorRight = new Spark(kIntakeMotorRight);
+				m_intakeMotorLeft = new Spark(kIntakeMotorLeft);
+				
 				
 				//Solenoids
 				armSolenoid = new DoubleSolenoid(forwardArmSolenoidChan, reverseArmSolenoidChan);
@@ -315,34 +322,23 @@ public class Robot extends SampleRobot{
         	}else if(!m_darioJoystick.getTrigger() || !m_darioJoystick.getRawButton(4)) {
         		stopCube();
         	}
+        	
+        	//Intake mechanism controls
+        	if(m_darioJoystick.getRawButton(5)){
+        	    m_intakeMotorRight.set(0.5);
+        	    m_intakeMotorLeft.set(0.5);
+        	}else if(!m_darioJoystick.vetRawButton(5)){
+        	    m_intakeMotorRight.set(0.0);
+        	    m_intakeMotorLeft.set(0.0);
+        	}
             Timer.delay(0.02);
-        	
-        	
         }
     }
     
     public void test() {
-    	turnRight();
-    	while(isTest() && isEnabled()) {
-    		//Mecanum drive using 2 joysticks
-    		m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
-        	
-        	//Slide rail controls
-        	if(m_darioJoystick.getRawButton(3)) {
-        		moveSlideUp(0.5);
-        	}else if(m_darioJoystick.getRawButton(2)) {
-        		moveSlideDown(0.25);
-        	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {
-        		stopSlide();
-        	}
-        	
-        	if(m_darioJoystick.getTrigger()) {
-        		grabCube();
-        	}else if(m_darioJoystick.getRawButton(4)) {
-        		releaseCube();
-        	}else if(!m_darioJoystick.getTrigger() || !m_darioJoystick.getRawButton(4)) {
-        		stopCube();
-        	}
+            /*
+             * Test code goes here.
+             */
         	Timer.delay(0.02);
     	}
     }
@@ -372,14 +368,16 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveBackward(double distance) {
-    	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() > initDistance - distance) {
-    		m_robotDrive.driveCartesian(0.0, -0.25, 0.0, 0.0);
-    		Timer.delay(0.02);
-    	}
-    	m_robotDrive.driveCartesian(0.0, 0.1, 0.0, 0.0);
-    	Timer.delay(0.02);
-    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+        if(m_timer.getMatchTime() < 15.0){
+            double initDistance = m_robotEncoder.getDistance();
+    	    while(m_robotEncoder.getDistance() > initDistance - distance) {
+      		    m_robotDrive.driveCartesian(0.0, -0.25, 0.0, 0.0);
+    		  Timer.delay(0.02);
+    	   }  
+    	   m_robotDrive.driveCartesian(0.0, 0.1, 0.0, 0.0);
+    	   Timer.delay(0.02);
+    	   m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+        }
     }
     
     /**
@@ -403,7 +401,8 @@ public class Robot extends SampleRobot{
      * Turns the robot to the left 90 degrees.
      */
     public void turnLeft() {
-    	double initBearing = onboardGyro.getAngle();
+        if(m_timer.getMatchTime() < 15.0){
+            double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
     		m_robotDrive.driveCartesian(0.0, 0.0, -0.25, 0.0);
@@ -414,6 +413,7 @@ public class Robot extends SampleRobot{
 		m_frontRight.set(-0.1);
 		m_rearRight.set(-0.1);
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+        }
     }
     
     //Slide rail controls
@@ -457,7 +457,7 @@ public class Robot extends SampleRobot{
     public void moveSlideDown(double speed, double time) {
     	double initTime = m_timer.get();
     	while(m_timer.get() < initTime + time) {
-    		moveSlideUp(speed);
+    		moveSlideUp(speed);  
     		Timer.delay(0.02);
     	}
     	stopSlide();
@@ -475,16 +475,31 @@ public class Robot extends SampleRobot{
     //Pneumatic controls
     /**
      * Operates pneumatics in order to grab a cube.
+     * @param autonomous whether being run in autonomous or teleop.
      */
-    public void grabCube() {
-    	armSolenoid.set(DoubleSolenoid.Value.kForward);
+    public void grabCube(boolean autonomous) {
+        if(autonomous){
+            if(m_timer.getMatchTime() < 15.0){
+                armSolenoid.set(DoubleSolenoid.Value.kForward);
+            
+        }else if(!autonomous){
+            armSolenoid.set(DoubleSolenoid.Value.kForward);
+        }
     }
     
     /**
      * Operates pneumatics in order to release a cube.
+     * @param autonomous whether being run in autonomous or teleop.
      */
-    public void releaseCube() {
-    	armSolenoid.set(DoubleSolenoid.Value.kReverse);
+    public void releaseCube(boolean autonomous) {
+        if(autonomous){
+            if(m_timer.getMatchTime() < 15.0){
+                armSolenoid.set(DoubleSolenoid.Value.kReverse);
+            }
+        }else if(!autonomous){
+            armSolenoid.set(DoubleSolenoid.Value.kReverse);
+        }
+    	
     }
     
     /**

@@ -34,7 +34,7 @@ public class Robot extends SampleRobot{
          * initGoal values: c, w (c -> scale; w -> switch)
          */
         char initPosition = 'L';
-        char initGoal = 'c';
+        char initGoal = 'w';
         
 	    //Channels for motors/joysticks
 		private static final int kFrontLeftChannel = 5;
@@ -57,7 +57,7 @@ public class Robot extends SampleRobot{
 		private static final int forwardArmSolenoidChan = 2;
 		private static final int reverseArmSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
-		private double e_distancePerPulse = wheelCircumference/1440 * 4; //Distance per pulse (circumference/pulses per revolution * 4)
+		private double e_distancePerPulse = wheelCircumference/1440 * 4 * 1.35068534; //Distance per pulse (circumference/pulses per revolution * 4)
 		private double slideMovementScaleTime = 7.0; //TO-DO
 		private double slideMovementSwitchTime = 3.5; //TO-DO
 		
@@ -186,7 +186,7 @@ public class Robot extends SampleRobot{
                     
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//First switch is on left
-                            moveForward(106.0);
+                            moveForward(113.0);
                             releaseCube(true);
                         
                         } else if(gameData.charAt(1) == 'R') {//First switch is on right
@@ -323,11 +323,31 @@ public class Robot extends SampleRobot{
     }
     
     public void test() {
-            /*
-             * Test code goes here.
-             */
-        	Timer.delay(0.02);
-    	
+        while (isOperatorControl() && isEnabled()) {
+        	//Mecanum drive using 2 joysticks
+        	m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
+        	
+        	//Slide rail controls
+        	if(m_darioJoystick.getRawButton(3)) {
+        		moveSlideUp(0.75);
+        	}else if(m_darioJoystick.getRawButton(2)) {
+        		moveSlideDown(0.5);
+        	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {
+        		stopSlide(false);
+        	}
+        	
+        	//Cube grabbing controls
+        	if(m_darioJoystick.getTrigger()) {
+        		grabCube(false);
+        	}else if(m_darioJoystick.getRawButton(4)) {
+        		releaseCube(false);
+        	}else if(!m_darioJoystick.getTrigger() || !m_darioJoystick.getRawButton(4)) {
+        		stopCube(false);
+        	}
+            Timer.delay(0.02);
+        }
+        
+        
     }
     
     //Functions
@@ -341,6 +361,7 @@ public class Robot extends SampleRobot{
         if(Timer.getMatchTime() < 15.0){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() < initDistance + distance) {
+    	    System.out.println("Encoder: " + m_robotEncoder.getDistance());
     		m_robotDrive.driveCartesian(0.0, 0.25, 0.0, 0.0);
     		Timer.delay(0.02);
     	   }
@@ -372,7 +393,7 @@ public class Robot extends SampleRobot{
      * Strafes the robot to the right a set distance.
      * @param distance Distance to strafe.
      */
-    public void strafeRight(double distance) {
+    public void strafeRight(double distance) {//DOES NOT WORK
     	if(Timer.getMatchTime() < 15.0) {
     		m_robotEncoder.reset();
     		double initX = m_robotEncoder.getPositionX();
@@ -390,7 +411,7 @@ public class Robot extends SampleRobot{
      * Strafes the robot to the left a set distance.
      * @param distance Distance to strafe.
      */
-    public void strafeLeft(double distance) {
+    public void strafeLeft(double distance) {//DOES NOT WORK
     	if(Timer.getMatchTime() < 15.0) {
     		m_robotEncoder.reset();
     		double initX = m_robotEncoder.getPositionX();

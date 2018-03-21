@@ -142,8 +142,10 @@ public class Robot extends SampleRobot{
 				     CameraServer.getInstance().startAutomaticCapture(camera);
 					 //CameraServer camera = CameraServer.getInstance();
 					 //camera.startAutomaticCapture();
-				 }catch(Exception E) {}
+				 }catch(ArrayIndexOutOfBoundsException e){
+				        System.out.println("Camera failed! Continuing program");
 					 }
+			}
 	
 	/**
 	 * 
@@ -336,7 +338,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveForward(double distance) {
-        if(Timer.getMatchtime() < 15.0)){
+        if(Timer.getMatchTime() < 15.0){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() < initDistance + distance) {
     		m_robotDrive.driveCartesian(0.0, 0.25, 0.0, 0.0);
@@ -406,17 +408,19 @@ public class Robot extends SampleRobot{
      * Turns the robot to the right 90 degrees
      */
     public void turnRight() {
-    	double initBearing = onboardGyro.getAngle();
-    	while(onboardGyro.getAngle() < initBearing + 90) {
-    		System.out.println("Gyro: " + onboardGyro.getAngle());
-    		m_robotDrive.driveCartesian(0.0, 0.0, 0.25, 0.0);
-    		Timer.delay(0.02);
+    	if(Timer.getMatchTime() < 15.0) {
+    		double initBearing = onboardGyro.getAngle();
+        	while(onboardGyro.getAngle() < initBearing + 90) {
+        		System.out.println("Gyro: " + onboardGyro.getAngle());
+        		m_robotDrive.driveCartesian(0.0, 0.0, 0.25, 0.0);
+        		Timer.delay(0.02);
+        	}
+        	m_frontLeft.set(-0.1);
+    		m_rearLeft.set(-0.1);
+    		m_frontRight.set(0.1);
+    		m_rearRight.set(0.1);
+        	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     	}
-    	m_frontLeft.set(-0.1);
-		m_rearLeft.set(-0.1);
-		m_frontRight.set(0.1);
-		m_rearRight.set(0.1);
-    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     }
     
     /**

@@ -336,15 +336,16 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveForward(double distance) {
-    	double initDistance = m_robotEncoder.getDistance();
-    	while(m_robotEncoder.getDistance() < initDistance + distance) {
-    		//System.out.println("Distance: " + m_robotEncoder.getDistance());
+        if(Timer.getMatchtime() < 15.0)){
+            double initDistance = m_robotEncoder.getDistance();
+    	    while(m_robotEncoder.getDistance() < initDistance + distance) {
     		m_robotDrive.driveCartesian(0.0, 0.25, 0.0, 0.0);
     		Timer.delay(0.02);
-    	}
-    	m_robotDrive.driveCartesian(0.0, -0.1, 0.0, 0.0);
-    	Timer.delay(0.02);
-    	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+    	   }
+    	   m_robotDrive.driveCartesian(0.0, -0.1, 0.0, 0.0);
+    	   Timer.delay(0.02);
+    	   m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
+        }
     }
     
     /**
@@ -366,7 +367,7 @@ public class Robot extends SampleRobot{
     }
     
     /**
-     * Strafes the robot to the right.
+     * Strafes the robot to the right a set distance.
      * @param distance Distance to strafe.
      */
     public void strafeRight(double distance) {

@@ -358,7 +358,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveForward(double distance) {
-        if(Timer.getMatchTime() < 15.0){
+        if(Timer.getMatchTime() > 0.5){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() < initDistance + distance) {
     	    System.out.println("Encoder: " + m_robotEncoder.getDistance());
@@ -377,7 +377,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveBackward(double distance) {
-        if(Timer.getMatchTime() < 15.0){
+        if(Timer.getMatchTime() > 0.5){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() > initDistance - distance) {
       		    m_robotDrive.driveCartesian(0.0, -0.25, 0.0, 0.0);
@@ -394,7 +394,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance to strafe.
      */
     public void strafeRight(double distance) {//DOES NOT WORK
-    	if(Timer.getMatchTime() < 15.0) {
+    	if(Timer.getMatchTime() > 0.5) {
     		m_robotEncoder.reset();
     		double initX = m_robotEncoder.getPositionX();
     		  while(m_robotEncoder.getPositionX() < initX + distance) {
@@ -412,7 +412,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance to strafe.
      */
     public void strafeLeft(double distance) {//DOES NOT WORK
-    	if(Timer.getMatchTime() < 15.0) {
+    	if(Timer.getMatchTime() > 0.5) {
     		m_robotEncoder.reset();
     		double initX = m_robotEncoder.getPositionX();
     		  while(m_robotEncoder.getPositionX() > initX - distance) {
@@ -429,7 +429,7 @@ public class Robot extends SampleRobot{
      * Turns the robot to the right 90 degrees
      */
     public void turnRight() {
-    	if(Timer.getMatchTime() < 15.0) {
+    	if(Timer.getMatchTime() > 0.5) {
     		double initBearing = onboardGyro.getAngle();
         	while(onboardGyro.getAngle() < initBearing + 90) {
         		System.out.println("Gyro: " + onboardGyro.getAngle());
@@ -448,7 +448,7 @@ public class Robot extends SampleRobot{
      * Turns the robot to the left 90 degrees.
      */
     public void turnLeft() {
-        if(Timer.getMatchTime() < 15.0){
+        if(Timer.getMatchTime() > 0.5){
             double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
@@ -505,7 +505,7 @@ public class Robot extends SampleRobot{
      * @param time Time to move slide
      */
     public void moveSlideDown(double speed, double time) {
-    	if(Timer.getMatchTime() < 15.0) {
+    	if(Timer.getMatchTime() > 0.5) {
     		double initTime = Timer.getFPGATimestamp();
         	while(Timer.getFPGATimestamp() < initTime + time) {
         		m_slideMotor1.set(-speed);
@@ -521,7 +521,7 @@ public class Robot extends SampleRobot{
      */
     public void stopSlide(boolean autonomous) {
        if(autonomous) {
-    	   if(Timer.getMatchTime() < 15.0) {
+    	   if(Timer.getMatchTime() > 0.5) {
     		   m_slideMotor1.set(0.0);
     	 	   m_slideMotor2.set(0.0);
     	   }
@@ -538,7 +538,7 @@ public class Robot extends SampleRobot{
      */
     public void grabCube(boolean autonomous) {
         if(autonomous){
-            if(Timer.getMatchTime() < 15.0){
+            if(Timer.getMatchTime() > 0.5){
                 armSolenoid.set(DoubleSolenoid.Value.kForward);
             }else if(!autonomous){
             armSolenoid.set(DoubleSolenoid.Value.kForward);
@@ -552,7 +552,7 @@ public class Robot extends SampleRobot{
      */
     public void releaseCube(boolean autonomous) {
         if(autonomous){
-            if(Timer.getMatchTime() < 15.0){
+            if(Timer.getMatchTime() > 0.5){
                 armSolenoid.set(DoubleSolenoid.Value.kReverse);
             }
         }else if(!autonomous){
@@ -566,7 +566,7 @@ public class Robot extends SampleRobot{
      */
     public void stopCube(boolean autonomous){
     	if(autonomous) {
-    		if(Timer.getMatchTime() < 15.0) {
+    		if(Timer.getMatchTime() > 0.5) {
     			armSolenoid.set(DoubleSolenoid.Value.kOff);
     		}
     	}else if(!autonomous) {

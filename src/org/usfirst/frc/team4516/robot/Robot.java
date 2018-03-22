@@ -361,7 +361,6 @@ public class Robot extends SampleRobot{
         if(Timer.getMatchTime() > 0.5){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() < initDistance + distance) {
-    	    System.out.println("Encoder: " + m_robotEncoder.getDistance());
     		m_robotDrive.driveCartesian(0.0, 0.25, 0.0, 0.0);
     		Timer.delay(0.02);
     	   }
@@ -480,13 +479,9 @@ public class Robot extends SampleRobot{
      */
     public void moveSlideUp(double speed, double time) {
     	if(Timer.getMatchTime() > 0.5) {
-    		double initTime = Timer.getFPGATimestamp();
-        	while(Timer.getFPGATimestamp() < (initTime + time)) {
-        		m_slideMotor1.set(speed);
-        		m_slideMotor2.set(-speed);
-        		Timer.delay(0.02);
-        	}
-        	stopSlide(true);
+    		moveSlideUp(speed);
+    		Timer.delay(time);
+    		stopSlide(true);
     	}
     }
     
@@ -506,12 +501,8 @@ public class Robot extends SampleRobot{
      */
     public void moveSlideDown(double speed, double time) {
     	if(Timer.getMatchTime() > 0.5) {
-    		double initTime = Timer.getFPGATimestamp();
-        	while(Timer.getFPGATimestamp() < initTime + time) {
-        		m_slideMotor1.set(-speed);
-        		m_slideMotor2.set(speed);
-        		Timer.delay(0.02);
-        	}
+    		moveSlideDown(speed);
+    		Timer.delay(time);
         	stopSlide(true);
     	}
     }

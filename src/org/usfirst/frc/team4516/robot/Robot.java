@@ -323,15 +323,15 @@ public class Robot extends SampleRobot{
     }
     
     public void test() {
-        while (isOperatorControl() && isEnabled()) {
+        while (isTest() && isEnabled()) {
         	//Mecanum drive using 2 joysticks
         	m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
         	
         	//Slide rail controls
         	if(m_darioJoystick.getRawButton(3)) {
-        		moveSlideUp(0.75);
+        		moveSlideUp(0.25);
         	}else if(m_darioJoystick.getRawButton(2)) {
-        		moveSlideDown(0.5);
+        		moveSlideDown(0.25);
         	}else if(!m_darioJoystick.getRawButton(3) || !m_darioJoystick.getRawButton(2)) {
         		stopSlide(false);
         	}
@@ -479,10 +479,11 @@ public class Robot extends SampleRobot{
      * @param time Time to move slide
      */
     public void moveSlideUp(double speed, double time) {
-    	if(Timer.getMatchTime() < 15.0) {
-    		double initTime = m_timer.get();
-        	while(m_timer.get() < initTime + time) {
-        		moveSlideUp(speed);
+    	if(Timer.getMatchTime() > 0.5) {
+    		double initTime = Timer.getFPGATimestamp();
+        	while(Timer.getFPGATimestamp() < (initTime + time)) {
+        		m_slideMotor1.set(speed);
+        		m_slideMotor2.set(-speed);
         		Timer.delay(0.02);
         	}
         	stopSlide(true);
@@ -505,9 +506,10 @@ public class Robot extends SampleRobot{
      */
     public void moveSlideDown(double speed, double time) {
     	if(Timer.getMatchTime() < 15.0) {
-    		double initTime = m_timer.get();
-        	while(m_timer.get() < initTime + time) {
-        		moveSlideUp(speed);  
+    		double initTime = Timer.getFPGATimestamp();
+        	while(Timer.getFPGATimestamp() < initTime + time) {
+        		m_slideMotor1.set(-speed);
+        		m_slideMotor2.set(speed);
         		Timer.delay(0.02);
         	}
         	stopSlide(true);

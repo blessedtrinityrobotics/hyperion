@@ -7,5 +7,8 @@ Hyperion Team Code.
 * Zachary Moroski
 * Ricardo Santamaria-Sarcos
 
+###### Pseudocoder
+* Grant Dillard
+
 ###### Mentors
 * Juan Carlos Santamaria

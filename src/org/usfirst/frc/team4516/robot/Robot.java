@@ -33,7 +33,7 @@ public class Robot extends SampleRobot{
          * initPosition values: L, M, R (fairly straightforward)
          * initGoal values: c, w (c -> scale; w -> switch)
          */
-        char initPosition = 'L';
+        char initPosition = 'M';
         char initGoal = 'w';
         
 	    //Channels for motors/joysticks
@@ -57,9 +57,9 @@ public class Robot extends SampleRobot{
 		private static final int forwardArmSolenoidChan = 2;
 		private static final int reverseArmSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
-		private double e_distancePerPulse = wheelCircumference/1440 * 4 * 1.35068534; //Distance per pulse (circumference/pulses per revolution)
+		private double e_distancePerPulse = (wheelCircumference/1440) * 4; //Distance per pulse (circumference/pulses per revolution)
 		private double slideMovementScaleTime = 7.0; //TO-DO
-		private double slideMovementSwitchTime = 2.0; //TO-DO
+		private double slideMovementSwitchTime = 3.0; //TO-DO
 		
 		//MecanumDrive constructor
 		private MecanumDrive m_robotDrive;
@@ -158,7 +158,7 @@ public class Robot extends SampleRobot{
             case 'L':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//DONE
+                        if(gameData.charAt(1) == 'L') {//DONE
                         	autoPickup();
                         	moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(36.0);
@@ -169,7 +169,7 @@ public class Robot extends SampleRobot{
                             turnRight();
                             releaseCube(true);
                             
-                        } else if(gameData.charAt(2) == 'R') {//First scale is on right
+                        } else if(gameData.charAt(1) == 'R') {//First scale is on right
                         	autoPickup();
                         	moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(36);
@@ -187,21 +187,20 @@ public class Robot extends SampleRobot{
                     break;
                     
                     case 'w':
-                        if(gameData.charAt(1) == 'L') {//DONE
+                        if(gameData.charAt(0) == 'L') {//DONE
                         	autoPickup();
                         	moveSlideUp(0.5, 3.0);
-                        	moveForward(24.0);
-                            moveForward(113.0);
+                            moveForward(106 - 25);
                             releaseCube(true);
                         
-                        } else if(gameData.charAt(1) == 'R') {//DONE
+                        } else if(gameData.charAt(0) == 'R') {//DONE
                         	autoPickup();
                         	moveSlideUp(0.5, slideMovementSwitchTime);
                             moveForward(24.0);
                             turnRight();
                             moveForward(86.0);
                             turnLeft();
-                            moveForward(89.0);
+                            moveForward(89.0 - 25);
                             releaseCube(true);
                     }
                     break;
@@ -211,48 +210,48 @@ public class Robot extends SampleRobot{
             case 'M':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//DONE
+                        if(gameData.charAt(1) == 'L') {//DONE
                         	autoPickup();
                         	moveSlideUp(0.5, slideMovementScaleTime);
     			            moveForward(36.0);
     			            turnLeft();
     			            moveForward(134.75);
     			            turnRight();
-    			            moveForward(273.75);
+    			            moveForward(270.75);
     			            turnRight();
     			            releaseCube(true);
     			
-    		          } else if(gameData.charAt(2) == 'R') {//DONE
+    		          } else if(gameData.charAt(1) == 'R') {//DONE
     		        	  	autoPickup();
     		        	  	moveSlideUp(0.5, slideMovementScaleTime);
     			            moveForward(36.0);
     			            turnRight();
     			            moveForward(134.75);
     			            turnLeft();
-    			            moveForward(273.75);
+    			            moveForward(270.75);
     			            turnLeft();
     			            releaseCube(true);
     		        }        
                     break;
                     
                     case 'w':
-                        if(gameData.charAt(1) == 'L') {//DONE
-                        	moveSlideUp(0.5, slideMovementSwitchTime);
+                        if(gameData.charAt(0) == 'L') {//DONE
                         	autoPickup();
-                            moveForward(24.0);
+                     	    moveSlideUp(0.5, slideMovementSwitchTime);
+                            moveForward(12.0);
                             turnLeft();
-                            moveForward(26.0);
+                            moveForward(50.0);
                             turnRight();
-                            moveForward(82.0);
+                            moveForward(82.0 - 2.0 + 12.0 - 22);
                             releaseCube(true);
-                    } else if(gameData.charAt(1) == 'R') {//DONE
-                    	   moveSlideUp(0.5, slideMovementSwitchTime);
+                    } else if(gameData.charAt(0) == 'R') {//DONE
                     	   autoPickup();
-                           moveForward(24.0);
+                    	   moveSlideUp(0.5, slideMovementSwitchTime);
+                           moveForward(12.0);
                            turnRight();
-                           moveForward(86.0);
+                           moveForward(50.0);
                            turnLeft();
-                           moveForward(82.0);
+                           moveForward(82.0 - 2.0 + 12.0);
                            releaseCube(true);
                     }        
                     break;
@@ -262,7 +261,7 @@ public class Robot extends SampleRobot{
             case 'R':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//DONE
+                        if(gameData.charAt(1) == 'L') {//DONE
                         	autoPickup();
                         	moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(36);
@@ -277,7 +276,7 @@ public class Robot extends SampleRobot{
                             turnRight();
                             releaseCube(true);
                             
-                        } else if(gameData.charAt(2) == 'R') {//DONE
+                        } else if(gameData.charAt(1) == 'R') {//DONE
                         	autoPickup();
                         	moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(36.0);
@@ -287,22 +286,23 @@ public class Robot extends SampleRobot{
                             moveForward(273.75);
                             turnLeft();
                             releaseCube(true);
+                            
                     }   
                     break;
                     
                     case 'w':
-                        if(gameData.charAt(1) == 'L') {//DONE
+                        if(gameData.charAt(0) == 'L') {//DONE
                         	autoPickup();
                             moveForward(24.0);
                             turnLeft();
                             moveForward(86.0);
                             turnRight();
-                            moveForward(82.0);
+                            moveForward(82.0 - 25);
                             releaseCube(true);
                         
-                        } else if(gameData.charAt(1) == 'R') {//DONE
+                        } else if(gameData.charAt(0) == 'R') {//DONE
                         	autoPickup();
-                            moveForward(106.0);
+                            moveForward(106.0 - 25);
                             releaseCube(true);
                     }
                     break;
@@ -340,14 +340,11 @@ public class Robot extends SampleRobot{
     }
     
     public void test() {
-    	while(isTest() && isEnabled()) {
-    	System.out.println("Front Right: " + e_frontRight.getDistance());
-    	System.out.println("Front left: " + e_frontLeft.getDistance());
-    	System.out.println("Rear Right: " + e_rearRight.getDistance());
-    	System.out.println("Rear Left: " + e_rearLeft.getDistance());
+    	turnRight();
+    	Timer.delay(1.0);
+    	turnLeft();
     	Timer.delay(0.5);
     	}
-    }
     /**
      * Moves the robot forward a set distance in units.
      * 
@@ -358,7 +355,7 @@ public class Robot extends SampleRobot{
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() < initDistance + distance) {
     	    	System.out.println("Encoder:  " + m_robotEncoder.getDistance());
-    		m_robotDrive.driveCartesian(0.0, 0.50, 0.0, 0.0);
+    		m_robotDrive.driveCartesian(0.0, 0.5, 0.0, 0.0);
     		Timer.delay(0.02);
     	   }
     	   m_robotDrive.driveCartesian(0.0, -0.1, 0.0, 0.0);
@@ -429,13 +426,11 @@ public class Robot extends SampleRobot{
     		double initBearing = onboardGyro.getAngle();
         	while(onboardGyro.getAngle() < initBearing + 90) {
         		System.out.println("Gyro: " + onboardGyro.getAngle());
-        		m_robotDrive.driveCartesian(0.0, 0.0, 0.25, 0.0);
+        		m_robotDrive.driveCartesian(0.0, 0.0, 0.5,0.0);
         		Timer.delay(0.02);
         	}
-        	m_frontLeft.set(-0.1);
-    		m_rearLeft.set(-0.1);
-    		m_frontRight.set(0.1);
-    		m_rearRight.set(0.1);
+        	m_robotDrive.driveCartesian(0.0, 0.0, -0.5 , 0.0);
+    		Timer.delay(0.2);
         	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
     	}
     }
@@ -448,13 +443,11 @@ public class Robot extends SampleRobot{
             double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
-    		m_robotDrive.driveCartesian(0.0, 0.0, -0.25, 0.0);
+    		m_robotDrive.driveCartesian(0.0, 0.0, -0.5 , 0.0);
     		Timer.delay(0.02);
     	}
-    	m_frontLeft.set(0.1);
-		m_rearLeft.set(0.1);
-		m_frontRight.set(-0.1);
-		m_rearRight.set(-0.1);
+    	m_robotDrive.driveCartesian(0.0,0.0,0.5,0.0);
+		Timer.delay(0.2);
     	m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
         }
     }
@@ -569,7 +562,7 @@ public class Robot extends SampleRobot{
     		Timer.delay(0.5);
     		releaseCube(false);
     		Timer.delay(0.5);
-    		moveForward(3.0);
+    		moveForward(6.0);
     		Timer.delay(0.5);
     		grabCube(false);
     		Timer.delay(0.5);

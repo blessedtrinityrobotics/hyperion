@@ -15,3 +15,5 @@ traction
 solenoids
 intake
 strafes
+joystick
+int

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.cscore.UsbCamera;
+//import edu.wpi.cscore.UsbCamera; <- For the alternate camera code
 
 
 @SuppressWarnings("deprecation")
@@ -43,6 +43,7 @@ public class Robot extends SampleRobot{
 		private static final int kRearRightChannel = 4;
 		private static final int kLeftJoystickChannel = 0;
 		private static final int kRightJoystickChannel = 1;
+		//private static final int kDarioJoystickChannel = 2;
 		private static final int kFrontRightEncoderA = 6;
 		private static final int kFrontRightEncoderB = 7;
 		private static final int kRearRightEncoderA = 2;
@@ -56,9 +57,9 @@ public class Robot extends SampleRobot{
 		private static final int forwardArmSolenoidChan = 2;
 		private static final int reverseArmSolenoidChan = 3;
 		private double wheelCircumference = 25.132741228700002267; //Circumference (in inches)
-		private double e_distancePerPulse = wheelCircumference/1440 * 4 * 1.35068534; //Distance per pulse (circumference/pulses per revolution * 4)
+		private double e_distancePerPulse = wheelCircumference/1440 * 4 * 1.35068534; //Distance per pulse (circumference/pulses per revolution)
 		private double slideMovementScaleTime = 7.0; //TO-DO
-		private double slideMovementSwitchTime = 3.5; //TO-DO
+		private double slideMovementSwitchTime = 2.0; //TO-DO
 		
 		//MecanumDrive constructor
 		private MecanumDrive m_robotDrive;
@@ -67,6 +68,7 @@ public class Robot extends SampleRobot{
 		private Timer m_timer = new Timer();
 		private Joystick m_rightJoystick;
 		private Joystick m_leftJoystick;
+		//private Joystick m_darioJoystick;
 		
 		//Drive Train Components
 		private SpeedController m_frontLeft;
@@ -132,14 +134,8 @@ public class Robot extends SampleRobot{
 				 /*
 				  * Camera: try catch statement so that code does not crash if camera does not work.
 				  */
-				 try{
-				     UsbCamera camera = new UsbCamera("cam0", 0);
-				     camera.setFPS(30); //30 FPS
-				     camera.setResolution(320, 240); //320 = width, 240 = height
-				     CameraServer.getInstance().startAutomaticCapture(camera);
-				 }catch(ArrayIndexOutOfBoundsException e){
-				        System.out.println("Camera failed! Continuing program");
-					 }
+				 CameraServer camera = CameraServer.getInstance();
+				 camera.startAutomaticCapture();
 			}
 	
 	/**
@@ -153,39 +149,48 @@ public class Robot extends SampleRobot{
     		gameData = DriverStation.getInstance().getGameSpecificMessage();
     		System.out.println("Field Data: " + gameData);
     		switch(initPosition) {
+    		
+    		//Alternate, fail-safe code.
+    		case 'F':
+    			moveForward(100);
+    			break;
+    			
             case 'L':
                 switch(initGoal){
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//DONE
                         	autoPickup();
+                        	moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(36.0);
                             turnLeft();
                             moveForward(38.37);
                             turnRight();
                             moveForward(273.35);
                             turnRight();
-                            moveSlideUp(0.5, slideMovementScaleTime);
                             releaseCube(true);
                             
                         } else if(gameData.charAt(2) == 'R') {//First scale is on right
                         	autoPickup();
-                            moveForward(240.0);
+                        	moveSlideUp(0.5, slideMovementScaleTime);
+                            moveForward(36);
+                            turnLeft();
+                            moveForward(38.37);
                             turnRight();
-                            moveForward(230.0);
+                            moveForward(196.22);
+                            turnRight();
+                            moveForward(238.74);
                             turnLeft();
-                            moveForward(80.0);
+                            moveForward(74.43);
                             turnLeft();
-                            moveSlideUp(0.5, slideMovementScaleTime);
-                            moveForward(10.0);
                             releaseCube(true);
-                            moveBackward(18.0);
                     }   
                     break;
                     
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//DONE
                         	autoPickup();
-                        	moveSlideUp(0.5, slideMovementSwitchTime);
+                        	moveSlideUp(0.5, 3.0);
+                        	moveForward(24.0);
                             moveForward(113.0);
                             releaseCube(true);
                         
@@ -208,30 +213,31 @@ public class Robot extends SampleRobot{
                     case 'c':
                         if(gameData.charAt(2) == 'L') {//DONE
                         	autoPickup();
+                        	moveSlideUp(0.5, slideMovementScaleTime);
     			            moveForward(36.0);
     			            turnLeft();
     			            moveForward(134.75);
     			            turnRight();
     			            moveForward(273.75);
     			            turnRight();
-    			            moveSlideUp(0.5, slideMovementScaleTime);
     			            releaseCube(true);
     			
     		          } else if(gameData.charAt(2) == 'R') {//DONE
     		        	  	autoPickup();
+    		        	  	moveSlideUp(0.5, slideMovementScaleTime);
     			            moveForward(36.0);
     			            turnRight();
     			            moveForward(134.75);
     			            turnLeft();
     			            moveForward(273.75);
     			            turnLeft();
-    			            moveSlideUp(0.5, slideMovementScaleTime);
     			            releaseCube(true);
     		        }        
                     break;
                     
                     case 'w':
                         if(gameData.charAt(1) == 'L') {//DONE
+                        	moveSlideUp(0.5, slideMovementSwitchTime);
                         	autoPickup();
                             moveForward(24.0);
                             turnLeft();
@@ -240,6 +246,7 @@ public class Robot extends SampleRobot{
                             moveForward(82.0);
                             releaseCube(true);
                     } else if(gameData.charAt(1) == 'R') {//DONE
+                    	   moveSlideUp(0.5, slideMovementSwitchTime);
                     	   autoPickup();
                            moveForward(24.0);
                            turnRight();
@@ -255,28 +262,30 @@ public class Robot extends SampleRobot{
             case 'R':
                 switch(initGoal){
                     case 'c':
-                        if(gameData.charAt(2) == 'L') {//First scale is on left
+                        if(gameData.charAt(2) == 'L') {//DONE
                         	autoPickup();
-                            moveForward(240.0);
+                        	moveSlideUp(0.5, slideMovementScaleTime);
+                            moveForward(36);
+                            turnRight();
+                            moveForward(38.37);
                             turnLeft();
-                            moveForward(230.0);
+                            moveForward(196.22);
+                            turnLeft();
+                            moveForward(238.74);
                             turnRight();
-                            moveForward(80.0);
+                            moveForward(74.43);
                             turnRight();
-                            moveSlideUp(0.5, slideMovementScaleTime);
-                            moveForward(10.0);
                             releaseCube(true);
-                            moveBackward(18.0);
                             
                         } else if(gameData.charAt(2) == 'R') {//DONE
                         	autoPickup();
+                        	moveSlideUp(0.5, slideMovementScaleTime);
                             moveForward(36.0);
                             turnRight();
                             moveForward(38.37);
                             turnLeft();
                             moveForward(273.75);
                             turnLeft();
-                            moveSlideUp(0.5, slideMovementScaleTime);
                             releaseCube(true);
                     }   
                     break;
@@ -315,7 +324,7 @@ public class Robot extends SampleRobot{
         	}else if(m_rightJoystick.getRawButton(2)) {
         		moveSlideDown(0.5);
         	}else if(!m_rightJoystick.getRawButton(3) || !m_rightJoystick.getRawButton(2)) {
-        		stopSlide(false);
+        		stopSlide();
         	}
         	
         	//Cube grabbing controls
@@ -331,49 +340,29 @@ public class Robot extends SampleRobot{
     }
     
     public void test() {
-    	
-    	moveSlideUp(0.75, 2.0);
-        while (isTest() && isEnabled()) {
-        	//Mecanum drive using 2 joysticks
-        	m_robotDrive.driveCartesian(m_rightJoystick.getX(), -m_rightJoystick.getY(), m_leftJoystick.getX(),0.0);
-        	
-        	//Slide rail controls
-        	if(m_rightJoystick.getRawButton(3)) {
-        		moveSlideUp(0.75);
-        	}else if(m_rightJoystick.getRawButton(2)) {
-        		moveSlideDown(0.5);
-        	}else if(!m_rightJoystick.getRawButton(3) || !m_rightJoystick.getRawButton(2)) {
-        		stopSlide(false);
-        	}
-        	
-        	//Cube grabbing controls
-        	if(m_rightJoystick.getTrigger()) {
-        		grabCube(false);
-        	}else if(m_rightJoystick.getRawButton(4)) {
-        		releaseCube(false);
-        	}else if(!m_rightJoystick.getTrigger() || !m_rightJoystick.getRawButton(4)) {
-        		stopCube(false);
-        	}
-            Timer.delay(0.02);
-        }
-        
-        
+    	while(isTest() && isEnabled()) {
+    	System.out.println("Front Right: " + e_frontRight.getDistance());
+    	System.out.println("Front left: " + e_frontLeft.getDistance());
+    	System.out.println("Rear Right: " + e_rearRight.getDistance());
+    	System.out.println("Rear Left: " + e_rearLeft.getDistance());
+    	Timer.delay(0.5);
+    	}
     }
-    
     /**
      * Moves the robot forward a set distance in units.
      * 
      * @param distance Distance, in units.
      */
     public void moveForward(double distance) {
-        if(isAutonomous()){
+        if(isAutonomous() || isTest()){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() < initDistance + distance) {
-    		m_robotDrive.driveCartesian(0.0, 0.25, 0.0, 0.0);
+    	    	System.out.println("Encoder:  " + m_robotEncoder.getDistance());
+    		m_robotDrive.driveCartesian(0.0, 0.50, 0.0, 0.0);
     		Timer.delay(0.02);
     	   }
     	   m_robotDrive.driveCartesian(0.0, -0.1, 0.0, 0.0);
-    	   Timer.delay(0.02);
+    	   Timer.delay(0.2);
     	   m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
         }
     }
@@ -384,14 +373,14 @@ public class Robot extends SampleRobot{
      * @param distance Distance, in units.
      */
     public void moveBackward(double distance) {
-        if(isAutonomous()){
+        if(isAutonomous() || isTest()){
             double initDistance = m_robotEncoder.getDistance();
     	    while(m_robotEncoder.getDistance() > initDistance - distance) {
-      		    m_robotDrive.driveCartesian(0.0, -0.25, 0.0, 0.0);
+      		    m_robotDrive.driveCartesian(0.0, -0.5, 0.0, 0.0);
     		  Timer.delay(0.02);
     	   }  
     	   m_robotDrive.driveCartesian(0.0, 0.1, 0.0, 0.0);
-    	   Timer.delay(0.02);
+    	   Timer.delay(0.2);
     	   m_robotDrive.driveCartesian(0.0, 0.0, 0.0, 0.0);
         }
     }
@@ -401,7 +390,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance to strafe.
      */
     public void strafeRight(double distance) {//DOES NOT WORK
-    	if(isAutonomous()) {
+    	if(isAutonomous() || isTest()) {
     		m_robotEncoder.reset();
     		double initX = m_robotEncoder.getPositionX();
     		  while(m_robotEncoder.getPositionX() < initX + distance) {
@@ -419,7 +408,7 @@ public class Robot extends SampleRobot{
      * @param distance Distance to strafe.
      */
     public void strafeLeft(double distance) {//DOES NOT WORK
-    	if(isAutonomous()) {
+    	if(isAutonomous() || isTest()) {
     		m_robotEncoder.reset();
     		double initX = m_robotEncoder.getPositionX();
     		  while(m_robotEncoder.getPositionX() > initX - distance) {
@@ -436,7 +425,7 @@ public class Robot extends SampleRobot{
      * Turns the robot to the right 90 degrees
      */
     public void turnRight() {
-    	if(isAutonomous()) {
+    	if(isAutonomous() || isTest()) {
     		double initBearing = onboardGyro.getAngle();
         	while(onboardGyro.getAngle() < initBearing + 90) {
         		System.out.println("Gyro: " + onboardGyro.getAngle());
@@ -455,7 +444,7 @@ public class Robot extends SampleRobot{
      * Turns the robot to the left 90 degrees.
      */
     public void turnLeft() {
-        if(isAutonomous()){
+        if(isAutonomous() || isTest()){
             double initBearing = onboardGyro.getAngle();
     	while(onboardGyro.getAngle() > initBearing - 90) {
     		System.out.println("Gyro: " + onboardGyro.getAngle());
@@ -486,10 +475,10 @@ public class Robot extends SampleRobot{
      * @param time Time to move slide
      */
     public void moveSlideUp(double speed, double time) {
-    	if(isAutonomous()) {
+    	if(isAutonomous() || isTest()) {
     		moveSlideUp(speed);
     		Timer.delay(time);
-    		stopSlide(true);
+    		stopSlide();
     	}
     }
     
@@ -508,26 +497,19 @@ public class Robot extends SampleRobot{
      * @param time Time to move slide
      */
     public void moveSlideDown(double speed, double time) {
-    	if(isAutonomous()) {
+    	if(isAutonomous() || isTest()) {
     		moveSlideDown(speed);
     		Timer.delay(time);
-        	stopSlide(true);
+        	stopSlide();
     	}
     }
     
     /**
      * Stops the slide.
      */
-    public void stopSlide(boolean autonomous) {
-       if(autonomous = true) {
-    	   if(isAutonomous()) {
-    		   m_slideMotor1.set(0.0);
-    	 	   m_slideMotor2.set(0.0);
-    	   }
-       }else{
-    	   m_slideMotor1.set(0.0);
-     	   m_slideMotor2.set(0.0);
-       }
+    public void stopSlide() {
+       m_slideMotor1.set(0.0);
+  	   m_slideMotor2.set(0.0);
     }
     
     //Pneumatic controls
@@ -536,28 +518,28 @@ public class Robot extends SampleRobot{
      * @param autonomous whether being run in autonomous or teleop.
      */
     public void grabCube(boolean autonomous) {
-    	armSolenoid.set(DoubleSolenoid.Value.kForward);
         if(autonomous = true){
-            if(isAutonomous()){
-                armSolenoid.set(DoubleSolenoid.Value.kForward);
+            if(isAutonomous() || isTest()){
+                armSolenoid.set(DoubleSolenoid.Value.kReverse);
             }else{
-            armSolenoid.set(DoubleSolenoid.Value.kForward);
+            armSolenoid.set(DoubleSolenoid.Value.kReverse);
             }
         }
     }
+    
     
     /**
      * Operates pneumatics in order to release a cube.
      * @param autonomous whether being run in autonomous or teleop.
      */
     public void releaseCube(boolean autonomous) {
-    	armSolenoid.set(DoubleSolenoid.Value.kReverse);
+    	armSolenoid.set(DoubleSolenoid.Value.kForward);
         if(autonomous = true){
-            if(isAutonomous()){
-                armSolenoid.set(DoubleSolenoid.Value.kReverse);
-            }
+            if(isAutonomous() || isTest()){
+                armSolenoid.set(DoubleSolenoid.Value.kForward);
+            }	
         }else{
-            armSolenoid.set(DoubleSolenoid.Value.kReverse);
+            armSolenoid.set(DoubleSolenoid.Value.kForward);
         }
     	
     }
@@ -568,7 +550,7 @@ public class Robot extends SampleRobot{
     public void stopCube(boolean autonomous){
     	armSolenoid.set(DoubleSolenoid.Value.kOff);
     	if(autonomous = true) {
-    		if(isAutonomous()) {
+    		if(isAutonomous() || isTest()) {
     			armSolenoid.set(DoubleSolenoid.Value.kOff);
     		}
     	}else{
@@ -577,14 +559,21 @@ public class Robot extends SampleRobot{
     }
     
     public void autoPickup() {
-    	if(isAutonomous()) {
     		moveForward(6.0);
     		Timer.delay(0.5);
-    		moveBackward(6.0);
-    		Timer.delay(1.0);
-    		grabCube(true);
+    		moveSlideUp(0.5, 0.5);
     		Timer.delay(0.5);
-    	}
-    }
+    		moveSlideDown(0.5, 0.4);
+    		Timer.delay(0.5);
+    		grabCube(false);
+    		Timer.delay(0.5);
+    		releaseCube(false);
+    		Timer.delay(0.5);
+    		moveForward(3.0);
+    		Timer.delay(0.5);
+    		grabCube(false);
+    		Timer.delay(0.5);
+    		
+   }
     
 }
